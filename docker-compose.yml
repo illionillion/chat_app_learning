@@ -1,0 +1,33 @@
+version: '3'
+services:
+  nextjs-app:
+    container_name: app
+    working_dir: /app
+    image: node:lts
+    volumes:
+      - ./app:/app
+    command: sh -c "npm run dev"
+    tty: true
+    ports:
+      - ${NEXTJS_PORT}:3000
+    environment:
+      - DB_HOST=${MYSQL_HOST}
+      - DB_PORT=${MYSQL_PORT}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_DATABASE=${MYSQL_DATABASE}
+    depends_on:
+      - mysql
+  mysql:
+    container_name: db
+    image: mysql:latest
+    restart: always
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - TZ=${TZ}
+    volumes:
+      - ./initdb.d:/docker-entrypoint-initdb.d
+      - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
