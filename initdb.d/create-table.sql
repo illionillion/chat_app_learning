@@ -16,3 +16,12 @@ insert into users (user_name, display_name, email, password, icon_path) values
 ('Umi', '海', 'umiumi@email.com', SHA2('password', 256), ''),
 ('Lucky', 'Lucky', 'Lucky@email.com', SHA2('password', 256), ''),
 ('Kazuki', '一樹', 'kazu@email.com', SHA2('password', 256), '');
+
+-- アクセストークンの管理テーブル
+CREATE TABLE access_tokens (
+    token_id INT PRIMARY KEY AUTO_INCREMENT,
+    token VARCHAR(255) NOT NULL,
+    user_id INT NOT NULL,
+    expiry_date DATETIME NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
