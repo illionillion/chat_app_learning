@@ -30,11 +30,10 @@
 
 4. **API エンドポイント:**
 
-   - 実装されている API のエンドポイント、パラメータ、およびレスポンスに関する情報を列挙
-
    - `POST /api/auth/register`
 
-     - Description: ユーザーのアカウントを登録します。
+     - Description: 
+       - ユーザーのアカウントを登録します。
      - Request Parameters:
        - `user_name` (string): ユーザー名
        - `display_name` (string): 表示名
@@ -47,7 +46,8 @@
        - `token` (string): アクセストークン
 
    - `POST /api/auth/login`
-     - Description: ユーザーのログインを行います。
+     - Description:
+       - ユーザーのログインを行います。
      - Request Parameters:
        - `user_name` (string): ユーザー名
        - `password` (string): パスワード
