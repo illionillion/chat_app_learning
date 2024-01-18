@@ -1,3 +1,4 @@
+import { hashPassword } from "@/app/lib/auth/password";
 import { issueAccessToken } from "@/app/lib/auth/saveToken";
 import mysql_connection from "@/app/lib/db/connection";
 import { NextRequest } from "next/server";
@@ -22,12 +23,12 @@ export const POST = async (request: NextRequest) => {
   try {
     const connection = await mysql_connection();
     const query =
-      "INSERT INTO users (user_name, display_name, email, password) VALUES (?, ?, ?, SHA2(?, 256))";
+      "INSERT INTO users (user_name, display_name, email, password) VALUES (?, ?, ?, ?)";
     const [result] = await connection.execute(query, [
       body.user_name,
       body.display_name,
       body.email,
-      body.password,
+      hashPassword(body.password),
     ]);
 
     // ユーザーが正常に登録された場合、result.insertIdを使用して新しいユーザーのIDを取得
@@ -38,7 +39,7 @@ export const POST = async (request: NextRequest) => {
         message: "ユーザーが正常に登録されました。",
         userId: userId,
         userName: body.user_name,
-        token: await issueAccessToken(parseInt(userId))
+        token: await issueAccessToken(parseInt(userId)),
       }),
       {
         status: 201,
