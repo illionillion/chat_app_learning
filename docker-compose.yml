@@ -1,6 +1,6 @@
 version: '3'
 services:
-  nextjs-app:
+  app:
     container_name: app
     working_dir: /app
     image: node:lts
