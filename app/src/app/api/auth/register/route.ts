@@ -1,4 +1,4 @@
-import { generateSecureRandomString } from "@/app/lib/auth/generatedKey";
+import { issueAccessToken } from "@/app/lib/auth/saveToken";
 import mysql_connection from "@/app/lib/db/connection";
 import { NextRequest } from "next/server";
 
@@ -38,7 +38,7 @@ export const POST = async (request: NextRequest) => {
         message: "ユーザーが正常に登録されました。",
         userId: userId,
         userName: body.user_name,
-        token: generateSecureRandomString()
+        token: await issueAccessToken(parseInt(userId))
       }),
       {
         status: 201,
