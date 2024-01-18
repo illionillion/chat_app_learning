@@ -4,9 +4,9 @@ import { RowDataPacket } from "mysql2";
 
 /**
  * アクセストークンの保存
- * @param token 
- * @param userId 
- * @param expiryDate 
+ * @param token
+ * @param userId
+ * @param expiryDate
  */
 const saveAccessTokenToDatabase = async (
   token: string,
@@ -29,8 +29,8 @@ const saveAccessTokenToDatabase = async (
 
 /**
  * ユーザーIDでアクセストークンの取得
- * @param userId 
- * @returns 
+ * @param userId
+ * @returns
  */
 const getAccessTokenByUserId = async (
   userId: number
@@ -55,9 +55,39 @@ const getAccessTokenByUserId = async (
 };
 
 /**
+ * アクセストークンが有効か
+ * @param userId
+ * @param token
+ * @returns
+ */
+export const verifyAccessToken = async (
+  userId: number,
+  token: string
+): Promise<boolean> => {
+  try {
+    const connection = await mysql_connection();
+    const query =
+      "SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW()";
+    const [result] = (await connection.execute(query, [
+      userId,
+    ])) as RowDataPacket[];
+
+    if (result.length > 0) {
+      const storedToken = result[0].token;
+      return storedToken === token;
+    }
+
+    return false; // ユーザーIDに対応するトークンが見つからない場合も失敗とする
+  } catch (error) {
+    console.error("Error verifying access token:", error);
+    return false;
+  }
+};
+
+/**
  * アクセストークンの発行
- * @param userId 
- * @returns 
+ * @param userId
+ * @returns
  */
 export const issueAccessToken = async (userId: number): Promise<string> => {
   // 既存のアクセストークンを取得
