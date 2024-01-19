@@ -56,3 +56,17 @@
        - `userId` (number): ログインしたユーザーの ID
        - `userName` (string): ログインしたユーザー名
        - `token` (string): アクセストークン
+  
+   - `POST /api/auth/verify`
+     - Description:
+       - ユーザーIDとアクセストークンの有効性を検証します。
+     - Request Parameters:
+       - userId (number): ユーザーの一意のID
+       - token (string): ユーザーのアクセストークン
+     -  Response:
+     - 成功時
+      - status (number): 200
+      - authenticated (boolean): true
+    - 失敗時
+      - status (number): 401
+      - authenticated (boolean): false
