@@ -1,9 +1,11 @@
 import mysql_connection from "@/app/lib/db/connection";
 import { NextRequest } from "next/server";
 import { RowDataPacket } from "mysql2";
+import { verifyAccessToken } from "@/app/lib/auth/saveToken";
+import { getUserIdFromUserName, updateProfile } from "@/app/lib/user/profile";
 
 /**
- * ユーザー情報の取得
+ * ユーザープロフィール情報の取得
  * @returns
  */
 export const GET = async (
@@ -56,6 +58,69 @@ export const GET = async (
         status: 500,
         headers: { "Content-Type": "application/json" },
       }
+    );
+  }
+};
+
+/**
+ * ユーザープロフィールの更新
+ * @param request 
+ * @param param1 
+ * @returns 
+ */
+export const PUT = async (
+  request: NextRequest,
+  { params }: { params: { user_name: string } }
+) => {
+  const { token, updatedProfileData } = await request.json();
+  const { user_name } = params;
+
+  // ユーザー名からユーザーIDを取得
+  const userId = await getUserIdFromUserName(user_name);
+
+  if (!userId) {
+    return new Response(
+      JSON.stringify({
+        message: "User not found",
+      }),
+      {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  // トークンの検証
+  const isAuthenticated = await verifyAccessToken(userId, token);
+
+  if (isAuthenticated) {
+    // ユーザーが提供したデータでプロフィール情報を更新
+    const success = await updateProfile(userId, updatedProfileData);
+
+    if (success) {
+      return new Response(
+        JSON.stringify({
+          status: 200,
+          message: "プロフィール情報が更新されました。",
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    } else {
+      return new Response(
+        JSON.stringify({
+          status: 500,
+          message: "プロフィール情報の更新に失敗しました。",
+        }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+  } else {
+    return new Response(
+      JSON.stringify({
+        status: 401,
+        message: "認証エラー。トークンが無効です。",
+      }),
+      { status: 401, headers: { "Content-Type": "application/json" } }
     );
   }
 };
