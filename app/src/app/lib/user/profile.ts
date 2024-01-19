@@ -55,12 +55,12 @@ export const updateProfile = async (
       setValues.push(updatedProfileData.displayName);
     }
 
-    if (updatedProfileData.description) {
+    if (updatedProfileData.description !== undefined) {
       setClause.push("description = ?");
       setValues.push(updatedProfileData.description);
     }
 
-    if (updatedProfileData.iconPath) {
+    if (updatedProfileData.iconPath !== undefined) {
       setClause.push("icon_path = ?");
       setValues.push(updatedProfileData.iconPath);
     }
