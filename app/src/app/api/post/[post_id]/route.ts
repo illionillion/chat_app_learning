@@ -1,11 +1,12 @@
+import { verifyAccessToken } from "@/app/lib/auth/saveToken";
 import mysql_connection from "@/app/lib/db/connection";
 import { RowDataPacket } from "mysql2";
 import { NextRequest } from "next/server";
 /**
  * 投稿の取得
- * @param request 
- * @param param1 
- * @returns 
+ * @param request
+ * @param param1
+ * @returns
  */
 export const GET = async (
   request: NextRequest,
@@ -55,6 +56,78 @@ export const GET = async (
     return new Response(
       JSON.stringify({
         message: "Server error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+};
+
+/**
+ * 投稿の削除
+ * @param request 
+ * @param param1 
+ * @returns 
+ */
+export const DELETE = async (
+  request: NextRequest,
+  { params }: { params: { post_id: number } }
+) => {
+  const { post_id: postId } = params;
+  const { userId, token } = await request.json();
+  try {
+    // トークン検証
+    const isAuthenticated = await verifyAccessToken(userId, token);
+
+    if (!isAuthenticated) {
+      return new Response(
+        JSON.stringify({
+          status: 401,
+          message: "認証エラー。トークンが無効です。",
+        }),
+        { status: 401, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // 投稿の更新（論理削除）
+    const connection = await mysql_connection();
+    const query = "UPDATE posts SET is_deleted = 1 WHERE post_id = ? AND user_id = ?";
+    const [result] = (await connection.execute(query, [
+      postId,
+      userId
+    ])) as RowDataPacket[];
+
+    // 更新が成功した場合
+    if (result.affectedRows > 0) {
+      return new Response(
+        JSON.stringify({
+          message: "投稿が正常に削除されました。",
+          postId: postId,
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    } else {
+      // 更新対象の投稿が見つからない場合
+      return new Response(
+        JSON.stringify({
+          message: "投稿が見つかりません。",
+        }),
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return new Response(
+      JSON.stringify({
+        message: "サーバーエラーが発生しました。",
       }),
       {
         status: 500,
