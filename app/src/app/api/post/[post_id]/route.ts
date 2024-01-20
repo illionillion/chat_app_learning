@@ -1,7 +1,12 @@
 import mysql_connection from "@/app/lib/db/connection";
 import { RowDataPacket } from "mysql2";
 import { NextRequest } from "next/server";
-
+/**
+ * 投稿の取得
+ * @param request 
+ * @param param1 
+ * @returns 
+ */
 export const GET = async (
   request: NextRequest,
   { params }: { params: { post_id: number } }
