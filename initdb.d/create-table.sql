@@ -36,6 +36,7 @@ CREATE TABLE posts (
     repost_count INT DEFAULT 0,
     reply_count INT DEFAULT 0,
     created_at DATETIME NOT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

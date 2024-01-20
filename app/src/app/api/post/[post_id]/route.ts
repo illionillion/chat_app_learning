@@ -16,7 +16,7 @@ export const GET = async (
     // 投稿の取得
     const connection = await mysql_connection();
     const query =
-      "SELECT post_id, user_id, content, image_path, like_count, repost_count, reply_count, created_at FROM posts WHERE post_id = ?";
+      "SELECT post_id, user_id, content, image_path, like_count, repost_count, reply_count, created_at FROM posts WHERE post_id = ? AND is_deleted = 0";
     const [result] = (await connection.execute(query, [
       postId,
     ])) as RowDataPacket[];
