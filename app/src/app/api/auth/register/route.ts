@@ -47,6 +47,7 @@ export const POST = async (request: NextRequest) => {
       }
     );
   } catch (error) {
+    console.error("Regist error:", error);
     return new Response(
       JSON.stringify({ message: "サーバーエラーが発生しました。" }),
       {
