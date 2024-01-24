@@ -19,7 +19,7 @@ const saveAccessTokenToDatabase = async (
       timeZone: "Asia/Tokyo",
     });
     const query =
-      "INSERT INTO access_tokens (token, user_id, expiry_date) VALUES (?, ?, ?)";
+      "INSERT INTO access_tokens (token, user_id, expiry_date, is_active) VALUES (?, ?, ?, 1)";
     await connection.execute(query, [token, userId, formattedExpiryDate]);
   } catch (error) {
     console.error("Failed to save access token to database:", error);
@@ -38,7 +38,7 @@ const getAccessTokenByUserId = async (
   try {
     const connection = await mysql_connection();
     const query =
-      "SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW()";
+      "SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW() AND is_active = 1";
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
@@ -67,7 +67,7 @@ export const verifyAccessToken = async (
   try {
     const connection = await mysql_connection();
     const query =
-      "SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW()";
+      "SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW() AND is_active = 1";
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
