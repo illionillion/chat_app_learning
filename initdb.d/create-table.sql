@@ -23,6 +23,7 @@ CREATE TABLE access_tokens (
     token VARCHAR(255) NOT NULL,
     user_id INT NOT NULL,
     expiry_date DATETIME NOT NULL,
+    is_active BOOLEAN NOT NULL DEFAULT 1, -- 1. 有効, 0. 無効
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
