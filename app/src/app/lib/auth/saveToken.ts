@@ -108,3 +108,20 @@ export const issueAccessToken = async (userId: number): Promise<string> => {
 
   return accessToken;
 };
+
+export const deactivateAccessToken = async (userId: string, token: string) => {
+  try {
+    const connection = await mysql_connection();
+    const query =
+      "UPDATE access_tokens SET is_active = 0 WHERE user_id = ? AND token = ? AND expiry_date > NOW() AND is_active = 1";
+    const [result] = (await connection.execute(query, [
+      userId,
+      token
+    ])) as RowDataPacket[];
+  
+    return result.changedRows > 0;
+  } catch (error) {
+    console.error("Error deactivateAccessToken:", error)
+    return false
+  }
+};
