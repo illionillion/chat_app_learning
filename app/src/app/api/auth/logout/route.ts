@@ -1,6 +1,11 @@
 import { deactivateAccessToken } from "@/app/lib/auth/saveToken";
 import { NextRequest } from "next/server";
 
+/**
+ * ログアウト
+ * @param request 
+ * @returns 
+ */
 export const POST = async (request: NextRequest) => {
   const { userId, token } = await request.json();
 

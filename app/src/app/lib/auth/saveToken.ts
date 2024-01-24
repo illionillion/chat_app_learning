@@ -109,6 +109,12 @@ export const issueAccessToken = async (userId: number): Promise<string> => {
   return accessToken;
 };
 
+/**
+ * トークンの無効化
+ * @param userId 
+ * @param token 
+ * @returns 
+ */
 export const deactivateAccessToken = async (userId: string, token: string) => {
   try {
     const connection = await mysql_connection();
