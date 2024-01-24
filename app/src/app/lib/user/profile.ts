@@ -76,7 +76,7 @@ export const updateProfile = async (
       )) as RowDataPacket[];
 
       // 更新が成功したかどうかを確認
-      return result.affectedRows > 0;
+      return result.changedRows > 0;
     } else {
       // SET 句がない場合は何も更新せず成功とみなす
       return true;
