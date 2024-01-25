@@ -1,5 +1,6 @@
 import { verifyAccessToken } from "@/app/lib/auth/saveToken";
 import mysql_connection from "@/app/lib/db/connection";
+import { updateLikeTotal } from "@/app/lib/post/like";
 import { RowDataPacket } from "mysql2";
 import { NextRequest } from "next/server";
 
@@ -50,6 +51,8 @@ export const DELETE = async (
         }
       );
     }
+
+    await updateLikeTotal(postId);
 
     return new Response(
       JSON.stringify({
