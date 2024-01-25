@@ -1,3 +1,7 @@
+-- Windows環境で試す
+-- SHOW VARIABLES LIKE 'character_set%';
+-- SET CHARACTER SET utf8mb4;
+
 -- ユーザーテーブル
 create table users (
     id int auto_increment primary key, -- id（主キー）
