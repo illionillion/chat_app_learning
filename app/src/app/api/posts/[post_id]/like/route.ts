@@ -1,8 +1,8 @@
-import { verifyAccessToken } from "@/app/lib/auth/saveToken";
-import mysql_connection from "@/app/lib/db/connection";
-import { updateLikeTotal } from "@/app/lib/post/like";
-import { RowDataPacket } from "mysql2";
-import { NextRequest } from "next/server";
+import { verifyAccessToken } from '@/app/lib/auth/saveToken';
+import mysql_connection from '@/app/lib/db/connection';
+import { updateLikeTotal } from '@/app/lib/post/like';
+import type { RowDataPacket } from 'mysql2';
+import type { NextRequest } from 'next/server';
 
 /**
  * 投稿にいいねする
@@ -12,7 +12,7 @@ import { NextRequest } from "next/server";
  */
 export const POST = async (
   request: NextRequest,
-  { params }: { params: { post_id: number } }
+  { params }: { params: { post_id: number } },
 ) => {
   const { post_id: postId } = params;
   const { userId, token } = await request.json();
@@ -24,9 +24,9 @@ export const POST = async (
       return new Response(
         JSON.stringify({
           status: 401,
-          message: "認証エラー。トークンが無効です。",
+          message: '認証エラー。トークンが無効です。',
         }),
-        { status: 401, headers: { "Content-Type": "application/json" } }
+        { status: 401, headers: { 'Content-Type': 'application/json' } },
       );
     }
 
@@ -34,25 +34,25 @@ export const POST = async (
     const connection = await mysql_connection();
 
     const [existingLikes] = (await connection.execute(
-      "SELECT * FROM likes WHERE user_id = ? AND post_id = ? AND is_unliked = 0",
-      [userId, postId]
+      'SELECT * FROM likes WHERE user_id = ? AND post_id = ? AND is_unliked = 0',
+      [userId, postId],
     )) as RowDataPacket[];
 
     if (existingLikes.length > 0) {
       // 既にいいねが存在する場合の処理
       return new Response(
         JSON.stringify({
-          message: "既に投稿にいいねされています。",
+          message: '既に投稿にいいねされています。',
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       );
     }
 
     const query =
-      "INSERT INTO likes (user_id, post_id, created_at, is_unliked) VALUES (?, ?, now(), 0)";
+      'INSERT INTO likes (user_id, post_id, created_at, is_unliked) VALUES (?, ?, now(), 0)';
     const [result] = (await connection.execute(query, [
       userId,
       postId,
@@ -61,12 +61,12 @@ export const POST = async (
     if (result.affectedRows === 0) {
       return new Response(
         JSON.stringify({
-          message: "投稿にいいねされませんでした。",
+          message: '投稿にいいねされませんでした。',
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       );
     }
 
@@ -74,16 +74,16 @@ export const POST = async (
 
     return new Response(undefined, {
       status: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error("Like error:", error);
+    console.error('Like error:', error);
     return new Response(
-      JSON.stringify({ message: "サーバーエラーが発生しました。" }),
+      JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
       {
         status: 400, // 例: 400 Bad Request
-        headers: { "Content-Type": "application/json" },
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   }
 };

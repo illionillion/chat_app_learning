@@ -1,8 +1,8 @@
-import mysql_connection from "@/app/lib/db/connection";
-import { NextRequest } from "next/server";
-import { RowDataPacket } from "mysql2";
-import { verifyAccessToken } from "@/app/lib/auth/saveToken";
-import { getUserIdFromUserName, updateProfile } from "@/app/lib/user/profile";
+import mysql_connection from '@/app/lib/db/connection';
+import type { NextRequest } from 'next/server';
+import type { RowDataPacket } from 'mysql2';
+import { verifyAccessToken } from '@/app/lib/auth/saveToken';
+import { getUserIdFromUserName, updateProfile } from '@/app/lib/user/profile';
 
 /**
  * ユーザープロフィール情報の取得
@@ -10,13 +10,13 @@ import { getUserIdFromUserName, updateProfile } from "@/app/lib/user/profile";
  */
 export const GET = async (
   request: NextRequest,
-  { params }: { params: { user_name: string } }
+  { params }: { params: { user_name: string } },
 ) => {
   const { user_name } = params;
   try {
     const connection = await mysql_connection();
     const query =
-      "SELECT id, user_name, display_name, description, icon_path FROM users WHERE user_name = ?";
+      'SELECT id, user_name, display_name, description, icon_path FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
       user_name,
     ])) as RowDataPacket[];
@@ -34,43 +34,43 @@ export const GET = async (
         }),
         {
           status: 200,
-          headers: { "Content-Type": "application/json" },
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       );
     } else {
       return new Response(
         JSON.stringify({
-          message: "User not found",
+          message: 'User not found',
         }),
         {
           status: 404,
-          headers: { "Content-Type": "application/json" },
-        }
+          headers: { 'Content-Type': 'application/json' },
+        },
       );
     }
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error('Error fetching user:', error);
     return new Response(
       JSON.stringify({
-        message: "Server error",
+        message: 'Server error',
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   }
 };
 
 /**
  * ユーザープロフィールの更新
- * @param request 
- * @param param1 
- * @returns 
+ * @param request
+ * @param param1
+ * @returns
  */
 export const PUT = async (
   request: NextRequest,
-  { params }: { params: { user_name: string } }
+  { params }: { params: { user_name: string } },
 ) => {
   const { token, updatedProfileData } = await request.json();
   const { user_name } = params;
@@ -81,12 +81,12 @@ export const PUT = async (
   if (!userId) {
     return new Response(
       JSON.stringify({
-        message: "User not found",
+        message: 'User not found',
       }),
       {
         status: 404,
-        headers: { "Content-Type": "application/json" },
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   }
 
@@ -101,26 +101,26 @@ export const PUT = async (
       return new Response(
         JSON.stringify({
           status: 200,
-          message: "プロフィール情報が更新されました。",
+          message: 'プロフィール情報が更新されました。',
         }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
+        { status: 200, headers: { 'Content-Type': 'application/json' } },
       );
     } else {
       return new Response(
         JSON.stringify({
           status: 500,
-          message: "プロフィール情報の更新に失敗しました。",
+          message: 'プロフィール情報の更新に失敗しました。',
         }),
-        { status: 500, headers: { "Content-Type": "application/json" } }
+        { status: 500, headers: { 'Content-Type': 'application/json' } },
       );
     }
   } else {
     return new Response(
       JSON.stringify({
         status: 401,
-        message: "認証エラー。トークンが無効です。",
+        message: '認証エラー。トークンが無効です。',
       }),
-      { status: 401, headers: { "Content-Type": "application/json" } }
+      { status: 401, headers: { 'Content-Type': 'application/json' } },
     );
   }
 };

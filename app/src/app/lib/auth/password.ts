@@ -1,11 +1,11 @@
-import { createHash } from "crypto";
+import { createHash } from 'crypto';
 
 /**
  * パスワードをハッシュ化する関数
  */
 export const hashPassword = (password: string): string => {
-  const hash = createHash("sha256");
-  return hash.update(password).digest("hex");
+  const hash = createHash('sha256');
+  return hash.update(password).digest('hex');
 };
 
 /**
@@ -13,7 +13,7 @@ export const hashPassword = (password: string): string => {
  */
 export const comparePassword = (
   inputPassword: string,
-  storedHash: string
+  storedHash: string,
 ): boolean => {
   const hashedInputPassword = hashPassword(inputPassword);
   return hashedInputPassword === storedHash;

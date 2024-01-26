@@ -4,7 +4,7 @@ import mysql from 'mysql2/promise';
 
 /**
  * db接続
- * @returns 
+ * @returns
  */
 const mysql_connection = async () =>
   await mysql.createConnection({

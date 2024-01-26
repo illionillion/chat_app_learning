@@ -1,5 +1,5 @@
-import mysql_connection from "@/app/lib/db/connection";
-import { RowDataPacket } from "mysql2";
+import mysql_connection from '@/app/lib/db/connection';
+import type { RowDataPacket } from 'mysql2';
 
 /**
  * ユーザー名からユーザーIDを取得
@@ -7,11 +7,11 @@ import { RowDataPacket } from "mysql2";
  * @returns ユーザーID
  */
 export const getUserIdFromUserName = async (
-  user_name: string
+  user_name: string,
 ): Promise<number | null> => {
   try {
     const connection = await mysql_connection();
-    const query = "SELECT id FROM users WHERE user_name = ?";
+    const query = 'SELECT id FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
       user_name,
     ])) as RowDataPacket[];
@@ -22,15 +22,15 @@ export const getUserIdFromUserName = async (
       return null; // ユーザー名に対応するユーザーが見つからない場合
     }
   } catch (error) {
-    console.error("Error fetching user ID:", error);
+    console.error('Error fetching user ID:', error);
     return null;
   }
 };
 
 export interface UpdatedProfileDataType {
-  description?: string;
-  displayName?: string;
-  iconPath?: string;
+  description?: string
+  displayName?: string
+  iconPath?: string
 }
 
 /**
@@ -41,7 +41,7 @@ export interface UpdatedProfileDataType {
  */
 export const updateProfile = async (
   userId: number,
-  updatedProfileData: UpdatedProfileDataType
+  updatedProfileData: UpdatedProfileDataType,
 ): Promise<boolean> => {
   try {
     const connection = await mysql_connection();
@@ -51,17 +51,17 @@ export const updateProfile = async (
     const setValues: any[] = [];
 
     if (updatedProfileData.displayName) {
-      setClause.push("display_name = ?");
+      setClause.push('display_name = ?');
       setValues.push(updatedProfileData.displayName);
     }
 
     if (updatedProfileData.description !== undefined) {
-      setClause.push("description = ?");
+      setClause.push('description = ?');
       setValues.push(updatedProfileData.description);
     }
 
     if (updatedProfileData.iconPath !== undefined) {
-      setClause.push("icon_path = ?");
+      setClause.push('icon_path = ?');
       setValues.push(updatedProfileData.iconPath);
     }
 
@@ -69,10 +69,10 @@ export const updateProfile = async (
     if (setClause.length > 0) {
       setValues.push(userId); // プレースホルダーをバインド
 
-      const query = `UPDATE users SET ${setClause.join(", ")} WHERE id = ?`;
+      const query = `UPDATE users SET ${setClause.join(', ')} WHERE id = ?`;
       const [result] = (await connection.execute(
         query,
-        setValues
+        setValues,
       )) as RowDataPacket[];
 
       // 更新が成功したかどうかを確認
@@ -82,7 +82,7 @@ export const updateProfile = async (
       return true;
     }
   } catch (error) {
-    console.error("Error updating profile:", error);
+    console.error('Error updating profile:', error);
     return false;
   }
 };

@@ -1,31 +1,31 @@
-import mysql_connection from "@/app/lib/db/connection";
-import { issueAccessToken } from "@/app/lib/auth/saveToken";
-import { NextRequest } from "next/server";
-import { comparePassword } from "@/app/lib/auth/password";
-import { RowDataPacket } from "mysql2";
+import mysql_connection from '@/app/lib/db/connection';
+import { issueAccessToken } from '@/app/lib/auth/saveToken';
+import type { NextRequest } from 'next/server';
+import { comparePassword } from '@/app/lib/auth/password';
+import type { RowDataPacket } from 'mysql2';
 
 /**
  * ログイン
- * @param request 
- * @returns 
+ * @param request
+ * @returns
  */
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
   if (!body.user_name || !body.password) {
     return new Response(
-      JSON.stringify({ message: "必要な情報が不足しています。" }),
+      JSON.stringify({ message: '必要な情報が不足しています。' }),
       {
         status: 400,
-        headers: { "Content-Type": "application/json" },
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   }
 
   try {
     const connection = await mysql_connection();
     const query =
-      "SELECT id, user_name, password FROM users WHERE user_name = ?";
+      'SELECT id, user_name, password FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
       body.user_name,
     ])) as RowDataPacket[];
@@ -40,46 +40,46 @@ export const POST = async (request: NextRequest) => {
 
         return new Response(
           JSON.stringify({
-            message: "ログインに成功しました。",
+            message: 'ログインに成功しました。',
             userId: user.id,
             userName: user.user_name,
             token: accessToken,
           }),
           {
             status: 200,
-            headers: { "Content-Type": "application/json" },
-          }
+            headers: { 'Content-Type': 'application/json' },
+          },
         );
       } else {
         return new Response(
           JSON.stringify({
-            message: "パスワードが正しくありません。",
+            message: 'パスワードが正しくありません。',
           }),
           {
             status: 401,
-            headers: { "Content-Type": "application/json" },
-          }
+            headers: { 'Content-Type': 'application/json' },
+          },
         );
       }
     }
 
     return new Response(
       JSON.stringify({
-        message: "ユーザー名が正しくありません。",
+        message: 'ユーザー名が正しくありません。',
       }),
       {
         status: 404,
-        headers: { "Content-Type": "application/json" },
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   } catch (error) {
-    console.error("Login error:", error);
+    console.error('Login error:', error);
     return new Response(
-      JSON.stringify({ message: "サーバーエラーが発生しました。" }),
+      JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   }
 };
