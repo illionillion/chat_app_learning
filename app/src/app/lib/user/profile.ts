@@ -50,8 +50,9 @@ export const updateProfile = async (
     const setClause: string[] = [];
     const setValues: any[] = [];
 
+    // 表示名が存在するか
     if (updatedProfileData.displayName) {
-      setClause.push('display_name = ?');
+      setClause.push("display_name = ?");
       setValues.push(updatedProfileData.displayName);
     }
 
