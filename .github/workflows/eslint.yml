@@ -31,19 +31,8 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Install ESLint
-        run: | 
-          npm i
+        run: npm i
 
       - name: Run ESLint
-        run: npx eslint .
-          --config .eslintrc
-          --ext .js,.jsx,.ts,.tsx
-          --format @microsoft/eslint-formatter-sarif
-          --output-file eslint-results.sarif
-        continue-on-error: true
-
-      - name: Upload analysis results to GitHub
-        uses: github/codeql-action/upload-sarif@v2
-        with:
-          sarif_file: eslint-results.sarif
-          wait-for-processing: true
+        run: npm run lint
+        continue-on-error: false
