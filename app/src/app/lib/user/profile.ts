@@ -28,9 +28,9 @@ export const getUserIdFromUserName = async (
 };
 
 export interface UpdatedProfileDataType {
-  description?: string
-  displayName?: string
-  iconPath?: string
+  description?: string;
+  displayName?: string;
+  iconPath?: string;
 }
 
 /**
