@@ -82,7 +82,7 @@ export const updateProfile = async (
       return true;
     }
   } catch (error) {
-    console.error('Error updating profile:', error);
+    console.error('Error updating profile->', error);
     return false;
   }
 };
