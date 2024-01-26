@@ -56,7 +56,7 @@ export const POST = async (request: NextRequest) => {
   } catch (error) {
     console.error('Post error:', error);
     return new Response(
-      JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
+      JSON.stringify({ message: 'サーバーエラーが発生しました。!!' }),
       {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
