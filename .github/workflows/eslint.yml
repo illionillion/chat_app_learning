@@ -22,9 +22,9 @@ jobs:
   eslint:
     name: Run eslint scanning
     runs-on: ubuntu-latest
-    # defaults:
-    #   run:
-    #     working-directory: app
+    defaults:
+      run:
+        working-directory: app
     permissions:
       contents: read
       security-events: write
@@ -39,8 +39,8 @@ jobs:
           npm install @microsoft/eslint-formatter-sarif@2.1.7
 
       - name: Run ESLint
-        run: npx eslint ./app
-          --config .eslintrc
+        run: npx eslint .
+          --config ../.eslintrc
           --ext .js,.jsx,.ts,.tsx
           --format @microsoft/eslint-formatter-sarif
           --output-file eslint-results.sarif
@@ -49,5 +49,5 @@ jobs:
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: eslint-results.sarif
+          sarif_file: ./app/eslint-results.sarif
           wait-for-processing: true
