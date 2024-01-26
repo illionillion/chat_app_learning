@@ -1,6 +1,5 @@
--- Windows環境で試す
--- SHOW VARIABLES LIKE 'character_set%';
--- SET CHARACTER SET utf8mb4;
+-- Windows環境で文字化け表示のために必要
+SET CHARACTER SET utf8mb4;
 
 -- ユーザーテーブル
 create table users (
