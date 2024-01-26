@@ -8,7 +8,8 @@
     "lint": "eslint ./app",
     "lint:fix": "eslint ./app --fix",
     "format": "prettier ./app",
-    "format:write": "prettier ./app --write"
+    "format:write": "prettier ./app --write",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
