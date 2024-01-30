@@ -12,13 +12,13 @@ export const GET = async (
   request: NextRequest,
   { params }: { params: { user_name: string } },
 ) => {
-  const { user_name } = params;
+  const { user_name: userName } = params;
   try {
     const connection = await mysql_connection();
     const query =
       'SELECT id, user_name, display_name, description, icon_path FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
-      user_name,
+      userName,
     ])) as RowDataPacket[];
 
     if (result.length > 0) {
@@ -73,10 +73,10 @@ export const PUT = async (
   { params }: { params: { user_name: string } },
 ) => {
   const { token, updatedProfileData } = await request.json();
-  const { user_name } = params;
+  const { user_name: userName } = params;
 
   // ユーザー名からユーザーIDを取得
-  const userId = await getUserIdFromUserName(user_name);
+  const userId = await getUserIdFromUserName(userName);
 
   if (!userId) {
     return new Response(

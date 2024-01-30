@@ -10,7 +10,7 @@ import type { NextRequest } from 'next/server';
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
-  if (!body.user_name || !body.display_name || !body.email || !body.password) {
+  if (!body.userName || !body.displayName || !body.email || !body.password) {
     return new Response(
       JSON.stringify({ message: '必要な情報が不足しています。' }),
       {
@@ -25,8 +25,8 @@ export const POST = async (request: NextRequest) => {
     const query =
       'INSERT INTO users (user_name, display_name, email, password) VALUES (?, ?, ?, ?)';
     const [result] = await connection.execute(query, [
-      body.user_name,
-      body.display_name,
+      body.userName,
+      body.displayName,
       body.email,
       hashPassword(body.password),
     ]);

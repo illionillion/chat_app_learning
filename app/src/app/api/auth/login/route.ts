@@ -12,7 +12,7 @@ import type { RowDataPacket } from 'mysql2';
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
 
-  if (!body.user_name || !body.password) {
+  if (!body.userName || !body.password) {
     return new Response(
       JSON.stringify({ message: '必要な情報が不足しています。' }),
       {
@@ -27,7 +27,7 @@ export const POST = async (request: NextRequest) => {
     const query =
       'SELECT id, user_name, password FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
-      body.user_name,
+      body.userName,
     ])) as RowDataPacket[];
 
     if (result.length > 0) {
