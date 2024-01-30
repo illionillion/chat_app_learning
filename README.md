@@ -1,5 +1,17 @@
 1. **環境構築:**
 
+   - `.env` ファイルに必要な環境変数の設定
+
+   ```env
+   MYSQL_HOST=mysql
+   MYSQL_USER=root
+   MYSQL_PORT=3306
+   MYSQL_PASSWORD=password
+   MYSQL_DATABASE=my_db
+   TZ=Asia/Tokyo
+   NEXTJS_PORT=8080
+   ```
+
    - プロジェクトの依存関係をインストールするためのコマンド
 
    ```bash
