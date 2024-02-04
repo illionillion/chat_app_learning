@@ -1,4 +1,4 @@
-import mysql_connection from '@/app/lib/db/connection';
+import mysql_connection from '@/lib/db/connection';
 import { generateSecureRandomString } from './generatedKey';
 import type { RowDataPacket } from 'mysql2';
 
