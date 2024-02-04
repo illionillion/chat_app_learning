@@ -33,6 +33,7 @@ jobs:
       MYSQL_PASSWORD: password
       MYSQL_DATABASE: contactform
       TZ: Asia/Tokyo
+      NEXTJS_PORT: 8080
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
