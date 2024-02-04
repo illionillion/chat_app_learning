@@ -1,5 +1,5 @@
-import { verifyAccessToken } from '@/app/lib/auth/saveToken';
-import mysql_connection from '@/app/lib/db/connection';
+import { verifyAccessToken } from '@/lib/auth/saveToken';
+import mysql_connection from '@/lib/db/connection';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 /**

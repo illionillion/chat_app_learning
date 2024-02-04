@@ -1,4 +1,4 @@
-import { verifyAccessToken } from '@/app/lib/auth/saveToken';
+import { verifyAccessToken } from '@/lib/auth/saveToken';
 import type { NextRequest } from 'next/server';
 
 export const POST = async (request: NextRequest) => {

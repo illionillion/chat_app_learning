@@ -1,6 +1,6 @@
-import { hashPassword } from '@/app/lib/auth/password';
-import { issueAccessToken } from '@/app/lib/auth/saveToken';
-import mysql_connection from '@/app/lib/db/connection';
+import { hashPassword } from '@/lib/auth/password';
+import { issueAccessToken } from '@/lib/auth/saveToken';
+import mysql_connection from '@/lib/db/connection';
 import type { NextRequest } from 'next/server';
 
 /**
@@ -38,7 +38,7 @@ export const POST = async (request: NextRequest) => {
       JSON.stringify({
         message: 'ユーザーが正常に登録されました。',
         userId: userId,
-        userName: body.user_name,
+        userName: body.userName,
         token: await issueAccessToken(parseInt(userId)),
       }),
       {

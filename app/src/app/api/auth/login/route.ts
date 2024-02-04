@@ -1,7 +1,7 @@
-import mysql_connection from '@/app/lib/db/connection';
-import { issueAccessToken } from '@/app/lib/auth/saveToken';
+import mysql_connection from '@/lib/db/connection';
+import { issueAccessToken } from '@/lib/auth/saveToken';
 import type { NextRequest } from 'next/server';
-import { comparePassword } from '@/app/lib/auth/password';
+import { comparePassword } from '@/lib/auth/password';
 import type { RowDataPacket } from 'mysql2';
 
 /**
