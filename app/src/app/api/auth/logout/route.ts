@@ -12,6 +12,10 @@ export const POST = async (request: NextRequest) => {
   if (!userId || !token) {
     return new Response(
       JSON.stringify({ status: 400, message: '必要な情報が不足しています。' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
     );
   }
 
