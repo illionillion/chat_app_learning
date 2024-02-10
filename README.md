@@ -26,6 +26,25 @@
    docker compose up -d
    ```
 
+  - MySQLへの接続コマンド
+  ```bash
+   docker exec -it db sh
+   mysql -u root -p
+   password
+   ```
+
+  - データベース接続
+  ```bash
+   show databases
+   use my_db
+   ```
+
+  - プロジェクト終了
+  ```bash
+   docker compose down
+   ```
+
+
 3. **API エンドポイント:**
 
    - `POST /api/auth/register`
