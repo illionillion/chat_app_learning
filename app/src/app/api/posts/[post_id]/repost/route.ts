@@ -1,5 +1,6 @@
 import { verifyAccessToken } from '@/lib/auth/saveToken';
 import mysql_connection from '@/lib/db/connection';
+import { updateRepostTotal } from '@/lib/post/repost';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
@@ -70,7 +71,7 @@ export const POST = async (
     }
 
     // リポスト数の更新
-    // ...
+    await updateRepostTotal(postId);
 
     return new Response(
       JSON.stringify({
@@ -142,7 +143,8 @@ export const DELETE = async (
     }
 
     // リポスト数の更新
-    // ...
+    await updateRepostTotal(postId);
+
     return new Response(
       JSON.stringify({
         message: 'リポストを削除しました。',
