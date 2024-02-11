@@ -125,7 +125,7 @@ export const deactivateAccessToken = async (userId: string, token: string) => {
       token,
     ])) as RowDataPacket[];
 
-    return result.changedRows > 0;
+    return result.affectedRows > 0;
   } catch (error) {
     console.error('Error deactivateAccessToken:', error);
     return false;

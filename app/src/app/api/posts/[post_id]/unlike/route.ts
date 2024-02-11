@@ -39,7 +39,7 @@ export const DELETE = async (
       postId,
     ])) as RowDataPacket[];
 
-    if (result.changedRows === 0) {
+    if (result.affectedRows === 0) {
       return new Response(
         JSON.stringify({
           message:
