@@ -22,14 +22,6 @@ const defaultContext: StateContextType = {
 export const StateContext = createContext<StateContextType>(defaultContext);
 
 export const useStateContext = () => {
-  // const [value, setValue, resetValue] = useLocalStorage<UserData>({
-  //   key: "chat_app_user_data",
-  //   defaultValue: {
-  //     userId: undefined,
-  //     userName: undefined,
-  //     token: undefined
-  //   }
-  // });
   const [value, setValue] = useState<UserData>(getLocalStorage());
 
   const onLogin: StateContextType['onLogin'] = (user) => {
