@@ -52,7 +52,7 @@ export const POST = async (
     }
 
     const query =
-      'INSERT INTO likes (user_id, post_id, created_at, is_unliked) VALUES (?, ?, now(), 0)';
+      'INSERT INTO likes (user_id, post_id, created_at) VALUES (?, ?, now())';
     const [result] = (await connection.execute(query, [
       userId,
       postId,
