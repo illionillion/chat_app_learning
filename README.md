@@ -35,8 +35,16 @@
 
   - データベース接続
   ```bash
-   show databases
-   use my_db
+   show databases;
+   use my_db;
+   (MySQL操作時”;”を忘れないこと!!)
+
+   ```
+
+   - データベース内容確認
+  ```bash
+   show tables from my_db;
+   select * from users;
    ```
 
   - プロジェクト終了
