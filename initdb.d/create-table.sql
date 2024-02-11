@@ -61,6 +61,7 @@ CREATE TABLE reposts (
     user_id INT NOT NULL,
     post_id INT NOT NULL,
     created_at DATETIME NOT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id)
 );
