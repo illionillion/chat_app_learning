@@ -47,6 +47,11 @@
    select * from users;
    ```
 
+    - データベース切断
+  ```bash
+   exit
+   ```
+
   - プロジェクト終了
   ```bash
    docker compose down
