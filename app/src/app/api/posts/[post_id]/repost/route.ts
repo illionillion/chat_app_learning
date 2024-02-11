@@ -3,6 +3,12 @@ import mysql_connection from '@/lib/db/connection';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
+/**
+ * リポストの作成
+ * @param request
+ * @param param1
+ * @returns
+ */
 export const POST = async (
   request: NextRequest,
   { params }: { params: { post_id: number } },
@@ -87,6 +93,12 @@ export const POST = async (
   }
 };
 
+/**
+ * リポストの削除
+ * @param request
+ * @param param1
+ * @returns
+ */
 export const DELETE = async (
   request: NextRequest,
   { params }: { params: { post_id: number } },
