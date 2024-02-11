@@ -1,4 +1,5 @@
 'use client';
+import { StateContext } from '@/lib/state/authContext';
 import {
   Button,
   FormControl,
@@ -11,7 +12,8 @@ import {
   useNotice,
 } from '@yamada-ui/react';
 import { Eye, EyeOff } from 'lucide-react';
-import type { FC } from 'react';
+import { useRouter } from 'next/navigation';
+import { useContext, type FC, useEffect } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 
@@ -23,7 +25,11 @@ type LoginData = {
 export const LoginForm: FC = () => {
   const [show, { toggle }] = useBoolean();
 
+  const { onLogin, userData } = useContext(StateContext);
+
   const notice = useNotice();
+
+  const router = useRouter();
 
   const {
     register,
@@ -42,14 +48,18 @@ export const LoginForm: FC = () => {
         body: JSON.stringify(data),
       });
       const json = await response.json();
-      console.log(response);
-      console.log(json);
 
       if (response.status === 200) {
         /* 
             ログイン成功
             userIdとtokenをCookieかストレージに保存、カスタムフックで保持
         */
+        onLogin({
+          userId: json?.userId,
+          userName: json?.userName,
+          token: json?.token,
+        });
+        router.push('/');
       } else {
         notice({
           title: 'エラー',
@@ -72,6 +82,12 @@ export const LoginForm: FC = () => {
       });
     }
   };
+
+  useEffect(() => {
+    if (userData && Object.values(userData).every((v) => !!v === true)) {
+      router.push('/');
+    }
+  }, [userData]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>

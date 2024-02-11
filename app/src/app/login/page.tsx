@@ -1,4 +1,5 @@
 import { LoginForm } from '@/features/login/commponents';
+import { AppProvider } from '@/lib/state/authContext';
 import { Container, Heading } from '@yamada-ui/react';
 import type { NextPage } from 'next';
 
@@ -8,10 +9,12 @@ export const metadata = {
 
 const LoginPage: NextPage = () => {
   return (
-    <Container maxW='2xl' justifyContent='center' m='auto' h='100dvh'>
-      <Heading textAlign='center'>ログイン</Heading>
-      <LoginForm />
-    </Container>
+    <AppProvider>
+      <Container maxW='2xl' justifyContent='center' m='auto' h='100dvh'>
+        <Heading textAlign='center'>ログイン</Heading>
+        <LoginForm />
+      </Container>
+    </AppProvider>
   );
 };
 
