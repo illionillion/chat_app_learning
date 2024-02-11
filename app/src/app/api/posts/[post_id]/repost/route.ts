@@ -86,3 +86,68 @@ export const POST = async (
     );
   }
 };
+
+export const DELETE = async (
+  request: NextRequest,
+  { params }: { params: { post_id: number } },
+) => {
+  const { post_id: postId } = params;
+  const { userId, token } = await request.json();
+
+  try {
+    // トークン認証
+    const isAuthenticated = await verifyAccessToken(userId, token);
+    if (!isAuthenticated) {
+      return new Response(
+        JSON.stringify({
+          status: 401,
+          message: '認証エラー。トークンが無効です。',
+        }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
+    const connection = await mysql_connection();
+
+    // リポストの削除
+    const query =
+      'UPDATE reposts SET is_deleted = 1 WHERE user_id = ? AND post_id = ? AND is_deleted = 0';
+    const [result] = (await connection.execute(query, [
+      userId,
+      postId,
+    ])) as RowDataPacket[];
+
+    if (result.affectedRows === 0) {
+      return new Response(
+        JSON.stringify({
+          message: 'リポストされていないか、すでにリポストが削除されてます。',
+        }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        },
+      );
+    }
+
+    // リポスト数の更新
+    // ...
+    return new Response(
+      JSON.stringify({
+        message: 'リポストを削除しました。',
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  } catch (error) {
+    console.error('Repost error:', error);
+    return new Response(
+      JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
+      {
+        status: 400, // 例: 400 Bad Request
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+};
