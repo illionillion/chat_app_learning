@@ -72,10 +72,15 @@ export const POST = async (
 
     await updateLikeTotal(postId);
 
-    return new Response(undefined, {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        message: '投稿にいいねされました。',
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
     console.error('Like error:', error);
     return new Response(
