@@ -64,7 +64,7 @@ export const DELETE = async (
       },
     );
   } catch (error) {
-    console.error('Like error:', error);
+    console.error('Unlike error:', error);
     return new Response(
       JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
       {
