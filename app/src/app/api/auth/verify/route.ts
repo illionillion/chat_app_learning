@@ -3,8 +3,9 @@ import type { NextRequest } from 'next/server';
 
 export const POST = async (request: NextRequest) => {
   const body = await request.json();
+  const token = request.headers.get('Authorization');
 
-  const { userId, token } = body;
+  const { userId } = body;
 
   if (!userId || !token) {
     return new Response(
@@ -16,8 +17,10 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
+  const accessToken = token.replace('Bearer ', '').trim();
+
   // アクセストークンの検証
-  const authenticated = await verifyAccessToken(userId, token);
+  const authenticated = await verifyAccessToken(userId, accessToken);
 
   if (authenticated) {
     return new Response(JSON.stringify({ status: 200, authenticated: true }), {
