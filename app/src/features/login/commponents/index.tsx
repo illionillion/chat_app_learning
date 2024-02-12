@@ -107,6 +107,7 @@ export const LoginForm: FC = () => {
                 message: '必須項目です。',
               },
             })}
+            autoComplete='on'
           />
         </FormControl>
         <FormControl
@@ -125,6 +126,7 @@ export const LoginForm: FC = () => {
                   message: '必須項目です。',
                 },
               })}
+              autoComplete='on'
             />
             <InputRightElement isClick>
               <IconButton
