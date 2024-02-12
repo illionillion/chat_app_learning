@@ -72,7 +72,8 @@ export const PUT = async (
   request: NextRequest,
   { params }: { params: { user_name: string } },
 ) => {
-  const { token, updatedProfileData } = await request.json();
+  const { updatedProfileData } = await request.json();
+  const token = request.headers.get('Authorization');
   const { user_name: userName } = params;
 
   // ユーザー名からユーザーIDを取得
@@ -90,8 +91,21 @@ export const PUT = async (
     );
   }
 
+  if (!token) {
+    return new Response(
+      JSON.stringify({
+        message: 'トークンがありません。',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
+  const accessToken = token.replace('Bearer ', '').trim();
   // トークンの検証
-  const isAuthenticated = await verifyAccessToken(userId, token);
+  const isAuthenticated = await verifyAccessToken(userId, accessToken);
 
   if (isAuthenticated) {
     // ユーザーが提供したデータでプロフィール情報を更新

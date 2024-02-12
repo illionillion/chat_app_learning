@@ -8,7 +8,8 @@ import type { NextRequest } from 'next/server';
  * @returns
  */
 export const POST = async (request: NextRequest) => {
-  const { userId, content, token } = await request.json();
+  const { userId, content } = await request.json();
+  const token = request.headers.get('Authorization');
 
   if (!userId || !content || !token) {
     return new Response(
@@ -21,8 +22,9 @@ export const POST = async (request: NextRequest) => {
   }
 
   try {
+    const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
-    const isAuthenticated = await verifyAccessToken(userId, token);
+    const isAuthenticated = await verifyAccessToken(userId, accessToken);
 
     if (isAuthenticated) {
       // 投稿の作成
