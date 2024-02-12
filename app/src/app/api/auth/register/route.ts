@@ -33,17 +33,19 @@ export const POST = async (request: NextRequest) => {
 
     // ユーザーが正常に登録された場合、result.insertIdを使用して新しいユーザーのIDを取得
     const userId = (result as any).insertId as string;
-
+    const accessToken = await issueAccessToken(parseInt(userId));
     return new Response(
       JSON.stringify({
         message: 'ユーザーが正常に登録されました。',
         userId: userId,
         userName: body.userName,
-        token: await issueAccessToken(parseInt(userId)),
       }),
       {
         status: 201,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
     );
   } catch (error) {

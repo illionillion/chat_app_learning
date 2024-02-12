@@ -43,11 +43,13 @@ export const POST = async (request: NextRequest) => {
             message: 'ログインに成功しました。',
             userId: user.id,
             userName: user.user_name,
-            token: accessToken,
           }),
           {
             status: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
           },
         );
       } else {
