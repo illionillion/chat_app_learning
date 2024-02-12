@@ -2,6 +2,8 @@
 import type { ReactNode } from 'react';
 import { createContext, useState } from 'react';
 
+const KEY = 'chat_app_user_data';
+
 export interface UserData {
   userId: number | undefined;
   userName: string | undefined;
@@ -13,8 +15,15 @@ export interface StateContextType {
   onLogin: (user: UserData) => void;
   onLogout: () => void;
 }
+
+const defaultUserData: UserData = {
+  userId: undefined,
+  userName: undefined,
+  token: undefined,
+};
+
 const defaultContext: StateContextType = {
-  userData: undefined,
+  userData: defaultUserData,
   onLogin: () => {},
   onLogout: () => {},
 };
@@ -34,6 +43,7 @@ export const useStateContext = () => {
       token: undefined,
       userName: undefined,
     });
+    localStorage.removeItem(KEY);
   };
   const contextValue: StateContextType = {
     userData: value,
@@ -45,9 +55,17 @@ export const useStateContext = () => {
 
 const getLocalStorage = (): UserData => {
   try {
-    return JSON.parse(localStorage.getItem('chat_app_user_data') || '');
+    const userDataString = localStorage.getItem(KEY);
+    if (!userDataString) {
+      return {
+        userId: undefined,
+        token: undefined,
+        userName: undefined,
+      };
+    }
+    return JSON.parse(userDataString);
   } catch (error) {
-    console.error(error);
+    console.error('Error parsing user data from local storage:', error);
     return {
       userId: undefined,
       token: undefined,
@@ -58,7 +76,7 @@ const getLocalStorage = (): UserData => {
 
 const setLocalStorage = (user: UserData) => {
   try {
-    localStorage.setItem('chat_app_user_data', JSON.stringify(user));
+    localStorage.setItem(KEY, JSON.stringify(user));
   } catch (error) {
     console.error(error);
   }

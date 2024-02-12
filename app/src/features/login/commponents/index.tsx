@@ -59,7 +59,6 @@ export const LoginForm: FC = () => {
           userName: json?.userName,
           token: json?.token,
         });
-        router.push('/');
       } else {
         notice({
           title: 'エラー',
