@@ -22,10 +22,15 @@ describe('/api/auth/verify', () => {
         expect(response.status).toStrictEqual(200);
         expect(json.userName).toStrictEqual(userData.userName);
         expect(Object.keys(json).includes('userId')).toStrictEqual(true);
-        expect(Object.keys(json).includes('token')).toStrictEqual(true);
+        expect(
+          response.headers.get('Authorization')?.includes('Bearer '),
+        ).toStrictEqual(true);
 
         userId = json.userId;
-        token = json.token;
+        token = response.headers
+          .get('Authorization')!
+          .replace('Bearer ', '')
+          .trim();
       },
     });
   });
@@ -35,11 +40,14 @@ describe('/api/auth/verify', () => {
       async test({ fetch }) {
         const userData = {
           userId: userId,
-          token: token,
         };
         const response = await fetch({
           method: 'POST',
           body: JSON.stringify(userData),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         });
         const json = await response.json();
         expect(response.status).toStrictEqual(200);
@@ -53,11 +61,14 @@ describe('/api/auth/verify', () => {
       async test({ fetch }) {
         const userData = {
           userId: userId * Math.floor(Math.random() * (100 + 1 - 2)) + 2,
-          token: token,
         };
         const response = await fetch({
           method: 'POST',
           body: JSON.stringify(userData),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
         });
         const json = await response.json();
         expect(response.status).toStrictEqual(401);
@@ -71,11 +82,14 @@ describe('/api/auth/verify', () => {
       async test({ fetch }) {
         const userData = {
           userId: userId,
-          token: token.split('').reverse().join(''),
         };
         const response = await fetch({
           method: 'POST',
           body: JSON.stringify(userData),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token.split('').reverse().join('')}`,
+          },
         });
         const json = await response.json();
         expect(response.status).toStrictEqual(401);

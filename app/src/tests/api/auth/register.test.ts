@@ -20,7 +20,9 @@ describe('/api/auth/register', () => {
         expect(response.status).toStrictEqual(201);
         expect(json.userName).toStrictEqual(userData.userName);
         expect(Object.keys(json).includes('userId')).toStrictEqual(true);
-        expect(Object.keys(json).includes('token')).toStrictEqual(true);
+        expect(
+          response.headers.get('Authorization')?.includes('Bearer '),
+        ).toStrictEqual(true);
       },
     });
   });
