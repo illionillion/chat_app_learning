@@ -48,8 +48,9 @@ export const LoginForm: FC = () => {
         body: JSON.stringify(data),
       });
       const json = await response.json();
+      const token = response.headers.get('Authorization');
 
-      if (response.status === 200) {
+      if (response.status === 200 && token) {
         /* 
             ログイン成功
             userIdとtokenをCookieかストレージに保存、カスタムフックで保持
@@ -57,7 +58,7 @@ export const LoginForm: FC = () => {
         onLogin({
           userId: json?.userId,
           userName: json?.userName,
-          token: json?.token,
+          token: token.replace('Bearer ', '').trim(),
         });
       } else {
         notice({
