@@ -27,7 +27,6 @@ export const Home: FC = () => {
       // 正しくないならログアウト
       if (!json.authenticated) {
         onLogout();
-        router.push('/');
         return;
       }
     } catch (error) {
