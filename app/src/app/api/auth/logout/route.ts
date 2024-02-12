@@ -7,7 +7,8 @@ import type { NextRequest } from 'next/server';
  * @returns
  */
 export const POST = async (request: NextRequest) => {
-  const { userId, token } = await request.json();
+  const { userId } = await request.json();
+  const token = request.headers.get('Authorization');
 
   if (!userId || !token) {
     return new Response(
@@ -18,9 +19,9 @@ export const POST = async (request: NextRequest) => {
       },
     );
   }
-
+  const accessToken = token.replace('Bearer ', '').trim();
   // トークンの無効化
-  const success = await deactivateAccessToken(userId, token);
+  const success = await deactivateAccessToken(userId, accessToken);
   if (success) {
     return new Response(
       JSON.stringify({
