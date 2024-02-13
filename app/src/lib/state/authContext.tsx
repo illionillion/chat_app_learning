@@ -37,13 +37,25 @@ export const useStateContext = () => {
     setValue(user);
     setLocalStorage(user);
   };
-  const onLogout: StateContextType['onLogout'] = () => {
+  const onLogout: StateContextType['onLogout'] = async () => {
+    // ユーザーの情報を削除
     setValue({
       userId: undefined,
       token: undefined,
       userName: undefined,
     });
     localStorage.removeItem(KEY);
+    // トークンの無効化
+    await fetch('/api/auth/logout', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: value?.userId,
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${value?.token}`,
+      },
+    });
   };
   const contextValue: StateContextType = {
     userData: value,
