@@ -8,8 +8,8 @@ import type { NextRequest } from 'next/server';
  * @returns
  */
 export const POST = async (request: NextRequest) => {
-  const { userId, content } = await request.json();
   const token = request.headers.get('Authorization');
+  const { userId, content } = await request.json();
 
   if (!userId || !content || !token) {
     return new Response(

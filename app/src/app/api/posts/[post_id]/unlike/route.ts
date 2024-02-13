@@ -15,8 +15,8 @@ export const DELETE = async (
   { params }: { params: { post_id: number } },
 ) => {
   const { post_id: postId } = params;
-  const { userId } = await request.json();
   const token = request.headers.get('Authorization');
+  const { userId } = await request.json();
 
   if (!userId || !token) {
     return new Response(

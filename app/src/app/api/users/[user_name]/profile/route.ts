@@ -72,8 +72,8 @@ export const PUT = async (
   request: NextRequest,
   { params }: { params: { user_name: string } },
 ) => {
-  const { updatedProfileData } = await request.json();
   const token = request.headers.get('Authorization');
+  const { updatedProfileData } = await request.json();
   const { user_name: userName } = params;
 
   // ユーザー名からユーザーIDを取得

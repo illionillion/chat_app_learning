@@ -2,8 +2,8 @@ import { verifyAccessToken } from '@/lib/auth/saveToken';
 import type { NextRequest } from 'next/server';
 
 export const POST = async (request: NextRequest) => {
-  const body = await request.json();
   const token = request.headers.get('Authorization');
+  const body = await request.json();
 
   const { userId } = body;
 
