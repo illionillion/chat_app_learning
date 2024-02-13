@@ -1,6 +1,6 @@
-import { verifyAccessToken } from '@/lib/auth/saveToken';
-import mysql_connection from '@/lib/db/connection';
-import { updateLikeTotal } from '@/lib/post/like';
+import { verifyAccessToken } from '@/lib/api/auth/saveToken';
+import mysql_connection from '@/lib/api/db/connection';
+import { updateLikeTotal } from '@/lib/api/post/like';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 

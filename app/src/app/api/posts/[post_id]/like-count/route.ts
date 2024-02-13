@@ -1,4 +1,4 @@
-import { updateLikeTotal } from '@/lib/post/like';
+import { updateLikeTotal } from '@/lib/api/post/like';
 import type { NextRequest } from 'next/server';
 
 /**

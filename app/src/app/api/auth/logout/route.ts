@@ -1,4 +1,4 @@
-import { deactivateAccessToken } from '@/lib/auth/saveToken';
+import { deactivateAccessToken } from '@/lib/api/auth/saveToken';
 import type { NextRequest } from 'next/server';
 
 /**

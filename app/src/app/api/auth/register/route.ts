@@ -1,6 +1,6 @@
-import { hashPassword } from '@/lib/auth/password';
-import { issueAccessToken } from '@/lib/auth/saveToken';
-import mysql_connection from '@/lib/db/connection';
+import { hashPassword } from '@/lib/api/auth/password';
+import { issueAccessToken } from '@/lib/api/auth/saveToken';
+import mysql_connection from '@/lib/api/db/connection';
 import type { NextRequest } from 'next/server';
 
 /**

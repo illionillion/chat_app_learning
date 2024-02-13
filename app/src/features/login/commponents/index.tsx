@@ -1,5 +1,5 @@
 'use client';
-import { StateContext } from '@/lib/state/authContext';
+import { StateContext } from '@/lib/commponents/state/authContext';
 import {
   Button,
   FormControl,

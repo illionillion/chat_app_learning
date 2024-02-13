@@ -1,8 +1,8 @@
-import mysql_connection from '@/lib/db/connection';
+import mysql_connection from '@/lib/api/db/connection';
 import type { NextRequest } from 'next/server';
 import type { RowDataPacket } from 'mysql2';
-import { verifyAccessToken } from '@/lib/auth/saveToken';
-import { getUserIdFromUserName, updateProfile } from '@/lib/user/profile';
+import { verifyAccessToken } from '@/lib/api/auth/saveToken';
+import { getUserIdFromUserName, updateProfile } from '@/lib/api/user/profile';
 
 /**
  * ユーザープロフィール情報の取得
