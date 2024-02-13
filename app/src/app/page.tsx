@@ -1,10 +1,13 @@
 import { Home } from '@/features/home/commponents';
-import { AppProvider } from '@/lib/state/authContext';
+import { Layout } from '@/lib/commponents/layout/Layout';
+import { AppProvider } from '@/lib/commponents/state/authContext';
 
 export default function Page() {
   return (
     <AppProvider>
-      <Home />
+      <Layout>
+        <Home />
+      </Layout>
     </AppProvider>
   );
 }
