@@ -34,7 +34,6 @@ export const DELETE = async (
     if (!isAuthenticated) {
       return new Response(
         JSON.stringify({
-          status: 401,
           message: '認証エラー。トークンが無効です。',
         }),
         { status: 401, headers: { 'Content-Type': 'application/json' } },

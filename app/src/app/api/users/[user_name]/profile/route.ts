@@ -114,7 +114,6 @@ export const PUT = async (
     if (success) {
       return new Response(
         JSON.stringify({
-          status: 200,
           message: 'プロフィール情報が更新されました。',
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
@@ -122,7 +121,6 @@ export const PUT = async (
     } else {
       return new Response(
         JSON.stringify({
-          status: 500,
           message: 'プロフィール情報の更新に失敗しました。',
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } },
@@ -131,7 +129,6 @@ export const PUT = async (
   } else {
     return new Response(
       JSON.stringify({
-        status: 401,
         message: '認証エラー。トークンが無効です。',
       }),
       { status: 401, headers: { 'Content-Type': 'application/json' } },
