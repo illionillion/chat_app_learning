@@ -18,6 +18,19 @@
    docker compose run --rm app npm i
    ```
 
+  - コンテナ内で実行するには以下
+
+   ```bash
+   docker exec -it app bash
+   npm i
+   ```
+  - テストコードの実行
+
+   ```bash
+   docker exec -it app bash
+   npm run test
+   ```
+
 2. **起動:**
 
    - プロジェクトを起動するためのコマンド
