@@ -1,12 +1,14 @@
 'use client';
 import { StateContext } from '@/lib/commponents/state/authContext';
 import {
+  Box,
   Button,
   FormControl,
   IconButton,
   Input,
   InputGroup,
   InputRightElement,
+  Link,
   VStack,
   useBoolean,
   useNotice,
@@ -138,6 +140,9 @@ export const LoginForm: FC = () => {
           </InputGroup>
         </FormControl>
         <Button type='submit'>ログイン</Button>
+        <Box textAlign='center'>
+          <Link href='/'>新規登録</Link>
+        </Box>
       </VStack>
     </form>
   );
