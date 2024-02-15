@@ -1,7 +1,7 @@
-import mysql_connection from '@/app/lib/db/connection';
-import { issueAccessToken } from '@/app/lib/auth/saveToken';
+import mysql_connection from '@/lib/api/db/connection';
+import { issueAccessToken } from '@/lib/api/auth/saveToken';
 import type { NextRequest } from 'next/server';
-import { comparePassword } from '@/app/lib/auth/password';
+import { comparePassword } from '@/lib/api/auth/password';
 import type { RowDataPacket } from 'mysql2';
 
 /**
@@ -43,11 +43,13 @@ export const POST = async (request: NextRequest) => {
             message: 'ログインに成功しました。',
             userId: user.id,
             userName: user.user_name,
-            token: accessToken,
           }),
           {
             status: 200,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
           },
         );
       } else {

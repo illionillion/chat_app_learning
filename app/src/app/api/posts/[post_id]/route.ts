@@ -1,5 +1,5 @@
-import { verifyAccessToken } from '@/app/lib/auth/saveToken';
-import mysql_connection from '@/app/lib/db/connection';
+import { verifyAccessToken } from '@/lib/api/auth/saveToken';
+import mysql_connection from '@/lib/api/db/connection';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 /**
@@ -76,10 +76,23 @@ export const DELETE = async (
   { params }: { params: { post_id: number } },
 ) => {
   const { post_id: postId } = params;
-  const { userId, token } = await request.json();
+  const token = request.headers.get('Authorization');
+  const { userId } = await request.json();
+
+  if (!userId || !token) {
+    return new Response(
+      JSON.stringify({ message: '必要な情報が不足しています。' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
   try {
+    const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
-    const isAuthenticated = await verifyAccessToken(userId, token);
+    const isAuthenticated = await verifyAccessToken(userId, accessToken);
 
     if (!isAuthenticated) {
       return new Response(
@@ -94,7 +107,7 @@ export const DELETE = async (
     // 投稿の更新（論理削除）
     const connection = await mysql_connection();
     const query =
-      'UPDATE posts SET is_deleted = 1 WHERE post_id = ? AND user_id = ?';
+      'UPDATE posts SET is_deleted = 1 WHERE post_id = ? AND user_id = ? AND is_deleted = 0';
     const [result] = (await connection.execute(query, [
       postId,
       userId,
@@ -105,7 +118,6 @@ export const DELETE = async (
       return new Response(
         JSON.stringify({
           message: '投稿が正常に削除されました。',
-          postId: postId,
         }),
         {
           status: 200,

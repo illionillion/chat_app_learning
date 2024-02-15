@@ -1,6 +1,6 @@
-import { verifyAccessToken } from '@/app/lib/auth/saveToken';
-import mysql_connection from '@/app/lib/db/connection';
-import { updateLikeTotal } from '@/app/lib/post/like';
+import { verifyAccessToken } from '@/lib/api/auth/saveToken';
+import mysql_connection from '@/lib/api/db/connection';
+import { updateLikeTotal } from '@/lib/api/post/like';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
@@ -15,15 +15,26 @@ export const POST = async (
   { params }: { params: { post_id: number } },
 ) => {
   const { post_id: postId } = params;
-  const { userId, token } = await request.json();
+  const token = request.headers.get('Authorization');
+  const { userId } = await request.json();
+
+  if (!userId || !token) {
+    return new Response(
+      JSON.stringify({ message: '必要な情報が不足しています。' }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
 
   try {
+    const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
-    const isAuthenticated = await verifyAccessToken(userId, token);
+    const isAuthenticated = await verifyAccessToken(userId, accessToken);
     if (!isAuthenticated) {
       return new Response(
         JSON.stringify({
-          status: 401,
           message: '認証エラー。トークンが無効です。',
         }),
         { status: 401, headers: { 'Content-Type': 'application/json' } },
@@ -52,7 +63,7 @@ export const POST = async (
     }
 
     const query =
-      'INSERT INTO likes (user_id, post_id, created_at, is_unliked) VALUES (?, ?, now(), 0)';
+      'INSERT INTO likes (user_id, post_id, created_at) VALUES (?, ?, now())';
     const [result] = (await connection.execute(query, [
       userId,
       postId,
@@ -72,10 +83,15 @@ export const POST = async (
 
     await updateLikeTotal(postId);
 
-    return new Response(undefined, {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new Response(
+      JSON.stringify({
+        message: '投稿にいいねされました。',
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   } catch (error) {
     console.error('Like error:', error);
     return new Response(

@@ -1,8 +1,8 @@
-import mysql_connection from '@/app/lib/db/connection';
+import mysql_connection from '@/lib/api/db/connection';
 import type { NextRequest } from 'next/server';
 import type { RowDataPacket } from 'mysql2';
-import { verifyAccessToken } from '@/app/lib/auth/saveToken';
-import { getUserIdFromUserName, updateProfile } from '@/app/lib/user/profile';
+import { verifyAccessToken } from '@/lib/api/auth/saveToken';
+import { getUserIdFromUserName, updateProfile } from '@/lib/api/user/profile';
 
 /**
  * ユーザープロフィール情報の取得
@@ -72,7 +72,8 @@ export const PUT = async (
   request: NextRequest,
   { params }: { params: { user_name: string } },
 ) => {
-  const { token, updatedProfileData } = await request.json();
+  const token = request.headers.get('Authorization');
+  const { updatedProfileData } = await request.json();
   const { user_name: userName } = params;
 
   // ユーザー名からユーザーIDを取得
@@ -90,8 +91,21 @@ export const PUT = async (
     );
   }
 
+  if (!token) {
+    return new Response(
+      JSON.stringify({
+        message: 'トークンがありません。',
+      }),
+      {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  }
+
+  const accessToken = token.replace('Bearer ', '').trim();
   // トークンの検証
-  const isAuthenticated = await verifyAccessToken(userId, token);
+  const isAuthenticated = await verifyAccessToken(userId, accessToken);
 
   if (isAuthenticated) {
     // ユーザーが提供したデータでプロフィール情報を更新
@@ -100,7 +114,6 @@ export const PUT = async (
     if (success) {
       return new Response(
         JSON.stringify({
-          status: 200,
           message: 'プロフィール情報が更新されました。',
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } },
@@ -108,7 +121,6 @@ export const PUT = async (
     } else {
       return new Response(
         JSON.stringify({
-          status: 500,
           message: 'プロフィール情報の更新に失敗しました。',
         }),
         { status: 500, headers: { 'Content-Type': 'application/json' } },
@@ -117,7 +129,6 @@ export const PUT = async (
   } else {
     return new Response(
       JSON.stringify({
-        status: 401,
         message: '認証エラー。トークンが無効です。',
       }),
       { status: 401, headers: { 'Content-Type': 'application/json' } },

@@ -1,5 +1,5 @@
-import './globals.css';
 import { Inter } from 'next/font/google';
+import { UIProvider } from '@yamada-ui/react';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -15,7 +15,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        <UIProvider>{children}</UIProvider>
+      </body>
     </html>
   );
 }

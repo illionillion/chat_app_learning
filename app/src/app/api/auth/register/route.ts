@@ -1,6 +1,6 @@
-import { hashPassword } from '@/app/lib/auth/password';
-import { issueAccessToken } from '@/app/lib/auth/saveToken';
-import mysql_connection from '@/app/lib/db/connection';
+import { hashPassword } from '@/lib/api/auth/password';
+import { issueAccessToken } from '@/lib/api/auth/saveToken';
+import mysql_connection from '@/lib/api/db/connection';
 import type { NextRequest } from 'next/server';
 
 /**
@@ -33,17 +33,19 @@ export const POST = async (request: NextRequest) => {
 
     // ユーザーが正常に登録された場合、result.insertIdを使用して新しいユーザーのIDを取得
     const userId = (result as any).insertId as string;
-
+    const accessToken = await issueAccessToken(parseInt(userId));
     return new Response(
       JSON.stringify({
         message: 'ユーザーが正常に登録されました。',
         userId: userId,
-        userName: body.user_name,
-        token: await issueAccessToken(parseInt(userId)),
+        userName: body.userName,
       }),
       {
         status: 201,
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
       },
     );
   } catch (error) {

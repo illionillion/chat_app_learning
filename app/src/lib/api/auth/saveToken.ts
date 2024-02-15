@@ -1,4 +1,4 @@
-import mysql_connection from '@/app/lib/db/connection';
+import mysql_connection from '@/lib/api/db/connection';
 import { generateSecureRandomString } from './generatedKey';
 import type { RowDataPacket } from 'mysql2';
 
@@ -125,7 +125,7 @@ export const deactivateAccessToken = async (userId: string, token: string) => {
       token,
     ])) as RowDataPacket[];
 
-    return result.changedRows > 0;
+    return result.affectedRows > 0;
   } catch (error) {
     console.error('Error deactivateAccessToken:', error);
     return false;
