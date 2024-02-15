@@ -47,7 +47,7 @@
    select * from users;
    ```
 
-    - データベース切断
+   - データベース切断
   ```bash
    exit
    ```
