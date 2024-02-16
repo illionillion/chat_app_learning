@@ -1,6 +1,6 @@
-import { Home } from '@/features/home/commponents';
-import { Layout } from '@/lib/commponents/layout/Layout';
-import { AppProvider } from '@/lib/commponents/state/authContext';
+import { Home } from '@/features/home/components';
+import { Layout } from '@/lib/components/layout/Layout';
+import { AppProvider } from '@/lib/components/state/authContext';
 
 export default function Page() {
   return (

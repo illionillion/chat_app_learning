@@ -1,5 +1,5 @@
-import { LoginForm } from '@/features/login/commponents';
-import { AppProvider } from '@/lib/commponents/state/authContext';
+import { LoginForm } from '@/features/login/components';
+import { AppProvider } from '@/lib/components/state/authContext';
 import { Container, Heading } from '@yamada-ui/react';
 import type { NextPage } from 'next';
 

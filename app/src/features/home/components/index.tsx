@@ -1,5 +1,5 @@
 'use client';
-import { StateContext } from '@/lib/commponents/state/authContext';
+import { StateContext } from '@/lib/components/state/authContext';
 import { Box, Button, Text } from '@yamada-ui/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
