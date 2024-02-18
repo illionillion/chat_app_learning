@@ -13,7 +13,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
 
   return (
     <>
-      <HStack w='100vw' h='100dvh'>
+      <HStack w='100vw' h='100dvh' gap={0}>
         <List
           w='xs'
           h='full'
