@@ -16,7 +16,13 @@ export const Home: FC = () => {
   const router = useRouter();
   const notice = useNotice();
 
-  const { register, handleSubmit, reset, watch } = useForm<SubmitData>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<SubmitData>();
   const content = watch('content');
 
   const onSubmit: SubmitHandler<SubmitData> = async (data) => {
@@ -96,12 +102,13 @@ export const Home: FC = () => {
               autosize
               placeholder='なにしてる？'
               {...register('content')}
+              isDisabled={isSubmitting}
             />
             <Box textAlign='right'>
               <Button
                 type='submit'
                 colorScheme='sky'
-                isDisabled={!content || /^\s*$/.test(content)}
+                isDisabled={!content || /^\s*$/.test(content) || isSubmitting}
               >
                 投稿
               </Button>
