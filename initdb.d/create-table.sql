@@ -72,8 +72,9 @@ CREATE TABLE replies (
     user_id INT NOT NULL,
     post_id INT NOT NULL,
     parent_reply_id INT, -- 親リプライのID
-    reply_text TEXT NOT NULL,
+    reply_content TEXT NOT NULL,
     created_at DATETIME NOT NULL,
+    is_deleted BOOLEAN NOT NULL DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (parent_reply_id) REFERENCES replies(reply_id)
