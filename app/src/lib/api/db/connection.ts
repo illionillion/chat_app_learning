@@ -10,8 +10,8 @@ const pool = mysql.createPool({
 });
 
 // 接続を取得する関数
-const getConnection = async () => {
+const mysql_connection = async () => {
   return await pool.getConnection();
 };
 
-export default getConnection;
+export default mysql_connection;
