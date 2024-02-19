@@ -36,7 +36,7 @@ export const LoginForm: FC = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<LoginData>();
 
   const onSubmit: SubmitHandler<LoginData> = async (data) => {
@@ -139,7 +139,9 @@ export const LoginForm: FC = () => {
             </InputRightElement>
           </InputGroup>
         </FormControl>
-        <Button type='submit'>ログイン</Button>
+        <Button type='submit' isLoading={isSubmitting}>
+          ログイン
+        </Button>
         <Box textAlign='center'>
           <Link href='/'>新規登録</Link>
         </Box>

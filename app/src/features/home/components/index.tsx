@@ -108,7 +108,8 @@ export const Home: FC = () => {
               <Button
                 type='submit'
                 colorScheme='sky'
-                isDisabled={!content || /^\s*$/.test(content) || isSubmitting}
+                isDisabled={!content || /^\s*$/.test(content)}
+                isLoading={isSubmitting}
               >
                 投稿
               </Button>
