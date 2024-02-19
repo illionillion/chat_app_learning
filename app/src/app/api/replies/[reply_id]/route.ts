@@ -17,7 +17,7 @@ export const GET = async (
     const [result] = (await connection.execute(query, [
       replyId,
     ])) as RowDataPacket[];
-    await connection.end();
+    connection.release();
 
     if (result.length === 0) {
       return new Response(
@@ -90,7 +90,7 @@ export const DELETE = async (
       replyId,
       userId,
     ])) as RowDataPacket[];
-    await connection.end();
+    connection.release();
 
     if (result.affectedRows === 0) {
       return new Response(

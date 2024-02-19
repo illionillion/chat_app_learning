@@ -20,7 +20,7 @@ export const GET = async (
     const [result] = (await connection.execute(query, [
       userName,
     ])) as RowDataPacket[];
-
+    connection.release();
     if (result.length > 0) {
       const user = result[0];
 

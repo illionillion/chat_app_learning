@@ -29,7 +29,7 @@ export const POST = async (request: NextRequest) => {
     const [result] = (await connection.execute(query, [
       body.userName,
     ])) as RowDataPacket[];
-
+    connection.release();
     if (result.length > 0) {
       const user = result[0];
       const passwordMatch = comparePassword(body.password, user.password);

@@ -61,7 +61,7 @@ export const DELETE = async (
         },
       );
     }
-
+    connection.release();
     await updateLikeTotal(postId);
 
     return new Response(

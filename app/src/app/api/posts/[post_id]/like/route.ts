@@ -80,7 +80,7 @@ export const POST = async (
         },
       );
     }
-
+    connection.release();
     await updateLikeTotal(postId);
 
     return new Response(

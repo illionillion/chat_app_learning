@@ -22,7 +22,7 @@ export const updateRepostTotal = async (postId: number): Promise<number> => {
     const queryUpdatePost =
       'UPDATE posts SET repost_count = ? WHERE post_id = ?';
     await connection.execute(queryUpdatePost, [repostCount, postId]);
-
+    connection.release();
     return repostCount;
   } catch (error) {
     console.error('Update repost total error:', error);

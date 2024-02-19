@@ -74,7 +74,7 @@ export const updateProfile = async (
         query,
         setValues,
       )) as RowDataPacket[];
-
+      connection.release();
       // 更新が成功したかどうかを確認
       return result.affectedRows > 0;
     } else {

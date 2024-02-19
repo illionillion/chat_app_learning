@@ -50,7 +50,7 @@ export const POST = async (
       parentReplyId ? parentReplyId : null,
       replyContent,
     ]);
-
+    connection.release();
     const replyId = (result as any).insertId as string;
 
     return new Response(

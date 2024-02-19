@@ -80,7 +80,7 @@ export const POST = async (
         },
       );
     }
-
+    connection.release();
     // リポスト数の更新
     await updateRepostTotal(postId);
 

@@ -34,7 +34,7 @@ export const POST = async (request: NextRequest) => {
       const [result] = await connection.execute(query, [userId, content]);
 
       const postId = (result as any).insertId as string;
-
+      connection.release();
       return new Response(
         JSON.stringify({
           message: '投稿が正常に作成されました。',

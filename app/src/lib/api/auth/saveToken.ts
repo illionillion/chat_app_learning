@@ -71,6 +71,7 @@ export const verifyAccessToken = async (
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
+    connection.release();
 
     if (result.length > 0) {
       const storedToken = result[0].token;
@@ -124,6 +125,7 @@ export const deactivateAccessToken = async (userId: string, token: string) => {
       userId,
       token,
     ])) as RowDataPacket[];
+    connection.release();
 
     return result.affectedRows > 0;
   } catch (error) {

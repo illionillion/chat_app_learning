@@ -21,7 +21,7 @@ export const GET = async (
     const [result] = (await connection.execute(query, [
       postId,
     ])) as RowDataPacket[];
-
+    connection.release();
     if (result.length > 0) {
       const post = result[0];
       return new Response(
