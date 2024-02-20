@@ -13,7 +13,7 @@ export interface UserData {
 export interface StateContextType {
   userData: UserData | undefined;
   onLogin: (user: UserData) => void;
-  onLogout: () => void;
+  onLogout: () => Promise<void>;
 }
 
 const defaultUserData: UserData = {
@@ -25,7 +25,7 @@ const defaultUserData: UserData = {
 const defaultContext: StateContextType = {
   userData: defaultUserData,
   onLogin: () => {},
-  onLogout: () => {},
+  onLogout: async () => {},
 };
 
 export const StateContext = createContext<StateContextType>(defaultContext);

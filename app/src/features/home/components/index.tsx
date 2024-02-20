@@ -73,7 +73,7 @@ export const Home: FC = () => {
 
       // 正しくないならログアウト
       if (!json.authenticated) {
-        onLogout();
+        await onLogout();
         return;
       }
     } catch (error) {
