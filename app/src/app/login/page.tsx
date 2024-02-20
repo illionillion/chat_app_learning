@@ -1,10 +1,11 @@
 import { LoginForm } from '@/features/login/components';
 import { AppProvider } from '@/lib/components/state/authContext';
 import { Container, Heading } from '@yamada-ui/react';
-import type { NextPage } from 'next';
+import type { Metadata, NextPage } from 'next';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'ログイン',
+  description: 'ログイン画面',
 };
 
 const LoginPage: NextPage = () => {
