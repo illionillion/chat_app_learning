@@ -143,7 +143,7 @@ export const LoginForm: FC = () => {
           ログイン
         </Button>
         <Box textAlign='center'>
-          <Link href='/'>新規登録</Link>
+          <Link href='/signup'>新規登録</Link>
         </Box>
       </VStack>
     </form>
