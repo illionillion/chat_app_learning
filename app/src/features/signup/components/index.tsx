@@ -59,10 +59,6 @@ export const SignupForm: FC = () => {
       const token = response.headers.get('Authorization');
 
       if (response.ok && token) {
-        /* 
-                    ログイン成功
-                    userIdとtokenをCookieかストレージに保存、カスタムフックで保持
-                */
         onLogin({
           userId: json?.userId,
           userName: json?.userName,
