@@ -1,8 +1,9 @@
 import { Home } from '@/features/home/components';
 import { Layout } from '@/lib/components/layout/Layout';
 import { AppProvider } from '@/lib/components/state/authContext';
+import type { NextPage } from 'next';
 
-export default function Page() {
+const Page: NextPage = () => {
   return (
     <AppProvider>
       <Layout>
@@ -10,4 +11,6 @@ export default function Page() {
       </Layout>
     </AppProvider>
   );
-}
+};
+
+export default Page;
