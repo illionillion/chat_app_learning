@@ -1,5 +1,6 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
 import mysql_connection from '@/lib/api/db/connection';
+import { updateReplyTotal } from '@/lib/api/post/replies';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
@@ -67,7 +68,7 @@ export const DELETE = async (
 ) => {
   const token = request.headers.get('Authorization');
   const { reply_id: replyId } = params;
-  const { userId } = await request.json();
+  const { userId, postId } = await request.json();
 
   if (!token || !replyId || !userId) {
     return new Response(
@@ -97,12 +98,15 @@ export const DELETE = async (
     // リプライを削除する処理を実行する
     const connection = await mysql_connection();
     const updateQuery =
-      'UPDATE replies SET is_deleted = 1 WHERE reply_id = ? AND user_id = ?';
+      'UPDATE replies SET is_deleted = 1 WHERE reply_id = ? AND user_id = ? AND post_id = ?';
     const [result] = (await connection.execute(updateQuery, [
       replyId,
       userId,
+      postId,
     ])) as RowDataPacket[];
     connection.release();
+
+    await updateReplyTotal(postId);
 
     if (result.affectedRows === 0) {
       return new Response(

@@ -1,5 +1,6 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
 import mysql_connection from '@/lib/api/db/connection';
+import { updateReplyTotal } from '@/lib/api/post/replies';
 import type { NextRequest } from 'next/server';
 
 /**
@@ -58,6 +59,8 @@ export const POST = async (
     ]);
     connection.release();
     const replyId = (result as any).insertId as string;
+
+    await updateReplyTotal(postId);
 
     return new Response(
       JSON.stringify({
