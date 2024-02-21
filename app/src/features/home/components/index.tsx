@@ -1,9 +1,18 @@
 'use client';
 import { StateContext } from '@/lib/components/state/authContext';
-import { Box, Button, Textarea, VStack, useNotice } from '@yamada-ui/react';
+import {
+  Box,
+  Button,
+  Card,
+  List,
+  ListItem,
+  Textarea,
+  VStack,
+  useNotice,
+} from '@yamada-ui/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { useContext, useEffect } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 
@@ -11,11 +20,22 @@ type SubmitData = {
   content: string;
 };
 
+type PostData = {
+  post_id: number;
+  user_id: number;
+  content: string;
+  image_path: string;
+  like_count: number;
+  repost_count: number;
+  reply_count: number;
+  created_at: string;
+};
+
 export const Home: FC = () => {
   const { userData, onLogout } = useContext(StateContext);
   const router = useRouter();
   const notice = useNotice();
-
+  const [posts, setPosts] = useState<PostData[]>([]);
   const {
     register,
     handleSubmit,
@@ -50,6 +70,7 @@ export const Home: FC = () => {
           isClosable: true,
         });
         reset();
+        fetchPosts();
       }
     } catch (error) {
       console.error(error);
@@ -81,12 +102,23 @@ export const Home: FC = () => {
     }
   };
 
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch('/api/posts');
+      const { posts } = (await response.json()) as { posts: PostData[] };
+      console.log(posts);
+      setPosts(posts);
+    } catch (error) {
+      console.error('fetch error:', error);
+    }
+  };
+
   useEffect(() => {
     console.log(userData);
     if (userData && Object.values(userData).every((v) => !!v === true)) {
       console.log('ログイン済み');
       // 認証
-      checkToken();
+      checkToken().then(() => fetchPosts());
     } else {
       console.log('未ログイン');
       router.push('/login');
@@ -117,6 +149,13 @@ export const Home: FC = () => {
           </VStack>
         </form>
       </Box>
+      <List px={2}>
+        {posts.map((v, i) => (
+          <ListItem key={`${v.post_id}-${i}`} as={Card}>
+            {v.content}
+          </ListItem>
+        ))}
+      </List>
     </VStack>
   );
 };

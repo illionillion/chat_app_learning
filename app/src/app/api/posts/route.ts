@@ -1,6 +1,34 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
 import mysql_connection from '@/lib/api/db/connection';
+import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
+
+export const GET = async () => {
+  try {
+    // リプライを取得する処理を実行する
+    const connection = await mysql_connection();
+    const query =
+      'SELECT post_id, user_id, content, image_path, like_count, repost_count, reply_count, created_at FROM posts WHERE is_deleted = 0';
+    const [result] = (await connection.execute(query)) as RowDataPacket[];
+    connection.release();
+
+    return new Response(
+      JSON.stringify({
+        posts: result,
+      }),
+      {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
+  } catch (error) {
+    console.error('Get error:', error);
+    return new Response(
+      JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } },
+    );
+  }
+};
 
 /**
  * 投稿の作成
