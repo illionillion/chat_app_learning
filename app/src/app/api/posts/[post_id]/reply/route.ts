@@ -2,6 +2,12 @@ import { verifyAccessToken } from '@/lib/api/auth/saveToken';
 import mysql_connection from '@/lib/api/db/connection';
 import type { NextRequest } from 'next/server';
 
+/**
+ * リプライの作成
+ * @param request
+ * @param param1
+ * @returns
+ */
 export const POST = async (
   request: NextRequest,
   { params }: { params: { post_id: number } },

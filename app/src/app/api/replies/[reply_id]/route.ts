@@ -3,6 +3,12 @@ import mysql_connection from '@/lib/api/db/connection';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
+/**
+ * リプライの取得
+ * @param request
+ * @param param1
+ * @returns
+ */
 export const GET = async (
   request: NextRequest,
   { params }: { params: { reply_id: number } },
@@ -49,6 +55,12 @@ export const GET = async (
   }
 };
 
+/**
+ * リプライの削除
+ * @param request
+ * @param param1
+ * @returns
+ */
 export const DELETE = async (
   request: NextRequest,
   { params }: { params: { reply_id: number } },
