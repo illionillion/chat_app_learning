@@ -123,6 +123,7 @@ export const Home: FC = () => {
         position='sticky'
         top={0}
         bg='white'
+        zIndex={99999}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack>
