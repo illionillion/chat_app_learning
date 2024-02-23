@@ -21,8 +21,10 @@ const saveAccessTokenToDatabase = async (
     const query =
       'INSERT INTO access_tokens (token, user_id, expiry_date, is_active) VALUES (?, ?, ?, 1)';
     await connection.execute(query, [token, userId, formattedExpiryDate]);
+    connection.destroy();
   } catch (error) {
     console.error('Failed to save access token to database:', error);
+    // connection.destroy();
     throw error;
   }
 };
@@ -42,6 +44,7 @@ const getAccessTokenByUserId = async (
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
+    connection.destroy();
 
     if (result.length > 0) {
       return result[0].token;
@@ -49,6 +52,7 @@ const getAccessTokenByUserId = async (
 
     return null;
   } catch (error) {
+    // connection.destroy();
     console.error('Failed to get access token:', error);
     throw error;
   }
@@ -71,7 +75,7 @@ export const verifyAccessToken = async (
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
-    connection.release();
+    connection.destroy();
 
     if (result.length > 0) {
       const storedToken = result[0].token;
@@ -80,6 +84,7 @@ export const verifyAccessToken = async (
 
     return false; // ユーザーIDに対応するトークンが見つからない場合も失敗とする
   } catch (error) {
+    // connection.destroy();
     console.error('Error verifying access token:', error);
     return false;
   }
@@ -125,10 +130,11 @@ export const deactivateAccessToken = async (userId: string, token: string) => {
       userId,
       token,
     ])) as RowDataPacket[];
-    connection.release();
+    connection.destroy();
 
     return result.affectedRows > 0;
   } catch (error) {
+    // connection.destroy();
     console.error('Error deactivateAccessToken:', error);
     return false;
   }

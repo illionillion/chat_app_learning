@@ -22,7 +22,7 @@ export const updateLikeTotal = async (postId: number): Promise<number> => {
     // postsテーブルへの反映
     const queryUpdatePost = 'UPDATE posts SET like_count = ? WHERE post_id = ?';
     await connection.execute(queryUpdatePost, [likeCount, postId]);
-    connection.release();
+    connection.destroy();
     return likeCount;
   } catch (error) {
     console.error('Update like total error:', error);

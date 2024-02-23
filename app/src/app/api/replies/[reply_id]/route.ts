@@ -24,7 +24,7 @@ export const GET = async (
     const [result] = (await connection.execute(query, [
       replyId,
     ])) as RowDataPacket[];
-    connection.release();
+    connection.destroy();
 
     if (result.length === 0) {
       return new Response(
@@ -104,7 +104,7 @@ export const DELETE = async (
       userId,
       postId,
     ])) as RowDataPacket[];
-    connection.release();
+    connection.destroy();
 
     await updateReplyTotal(postId);
 

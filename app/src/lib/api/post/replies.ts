@@ -15,7 +15,7 @@ export const updateReplyTotal = async (postId: number): Promise<number> => {
     const queryUpdatePost =
       'UPDATE posts SET reply_count = ? WHERE post_id = ?';
     await connection.execute(queryUpdatePost, [replyCount, postId]);
-    connection.release();
+    connection.destroy();
     console.log('postId:', postId);
     console.log('replyCount:', replyCount);
 

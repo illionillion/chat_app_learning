@@ -30,7 +30,7 @@ export const POST = async (request: NextRequest) => {
       body.email,
       hashPassword(body.password),
     ]);
-    connection.release();
+    connection.destroy();
     // ユーザーが正常に登録された場合、result.insertIdを使用して新しいユーザーのIDを取得
     const userId = (result as any).insertId as string;
     const accessToken = await issueAccessToken(parseInt(userId));
