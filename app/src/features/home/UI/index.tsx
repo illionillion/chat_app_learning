@@ -116,7 +116,14 @@ export const Home: FC = () => {
 
   return (
     <VStack>
-      <Box px={1} py={2} borderBottom='1px solid black'>
+      <Box
+        px={1}
+        py={2}
+        borderBottom='1px solid black'
+        position='sticky'
+        top={0}
+        bg='white'
+      >
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack>
             <Textarea

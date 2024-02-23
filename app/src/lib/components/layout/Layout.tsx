@@ -92,7 +92,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           </Button>
         </ListItem>
       </List>
-      <Box w='full' h='full'>
+      <Box w='full' h='full' overflowY='auto'>
         {children}
       </Box>
     </HStack>
