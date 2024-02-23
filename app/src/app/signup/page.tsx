@@ -1,7 +1,7 @@
 import { AppProvider } from '@/lib/components/state/authContext';
 import type { Metadata, NextPage } from 'next';
 import { Container, Heading } from '@yamada-ui/react';
-import { SignupForm } from '@/features/signup/components';
+import { SignupForm } from '@/features/signup/UI';
 export const metadata: Metadata = {
   title: 'サインアップ',
   description: '新規登録',

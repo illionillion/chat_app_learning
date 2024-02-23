@@ -1,11 +1,10 @@
 'use client';
 import { StateContext } from '@/lib/components/state/authContext';
+import type { PostData } from '@/lib/types/PostData';
 import {
   Box,
   Button,
-  Card,
   List,
-  ListItem,
   Textarea,
   VStack,
   useNotice,
@@ -15,20 +14,10 @@ import type { FC } from 'react';
 import { useContext, useEffect, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
+import { PostItem } from './components/PostItem';
 
 type SubmitData = {
   content: string;
-};
-
-type PostData = {
-  post_id: number;
-  user_id: number;
-  content: string;
-  image_path: string;
-  like_count: number;
-  repost_count: number;
-  reply_count: number;
-  created_at: string;
 };
 
 export const Home: FC = () => {
@@ -151,9 +140,7 @@ export const Home: FC = () => {
       </Box>
       <List px={2}>
         {posts.map((v, i) => (
-          <ListItem key={`${v.post_id}-${i}`} as={Card}>
-            {v.content}
-          </ListItem>
+          <PostItem key={`${v.post_id}-${i}`} {...v} />
         ))}
       </List>
     </VStack>

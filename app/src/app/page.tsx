@@ -1,4 +1,4 @@
-import { Home } from '@/features/home/components';
+import { Home } from '@/features/home/UI';
 import { Layout } from '@/lib/components/layout/Layout';
 import { AppProvider } from '@/lib/components/state/authContext';
 import type { NextPage } from 'next';
