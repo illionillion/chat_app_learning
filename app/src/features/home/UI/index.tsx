@@ -147,9 +147,9 @@ export const Home: FC = () => {
         </form>
       </Box>
       <List px={2}>
-        {posts.map((v, i) => (
-          <PostItem key={`${v.post_id}-${i}`} {...v} />
-        ))}
+        {posts &&
+          posts.length > 0 &&
+          posts.map((v, i) => <PostItem key={`${v.post_id}-${i}`} {...v} />)}
       </List>
     </VStack>
   );
