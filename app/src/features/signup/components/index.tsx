@@ -42,6 +42,8 @@ export const SignupForm: FC = () => {
     register,
     handleSubmit,
     watch,
+    getValues,
+    trigger,
     formState: { errors, isSubmitting },
   } = useForm<SignupData>();
 
@@ -145,6 +147,15 @@ export const SignupForm: FC = () => {
               required: {
                 value: true,
                 message: '必須項目です。',
+              },
+              onBlur: () => {
+                if (getValues('email')) {
+                  trigger('email');
+                }
+              },
+              pattern: {
+                value: /^[\w\-._]+@[\w\-._]+\.[A-Za-z]+/,
+                message: '入力形式がメールアドレスではありません。',
               },
             })}
             autoComplete='on'
