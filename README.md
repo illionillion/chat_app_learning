@@ -1,30 +1,73 @@
 1. **環境構築:**
 
-   - `.env` ファイルに必要な環境変数の設定
+- `.env` ファイルに必要な環境変数の設定
 
-   ```env
-   MYSQL_HOST=mysql
-   MYSQL_USER=root
-   MYSQL_PORT=3306
-   MYSQL_PASSWORD=password
-   MYSQL_DATABASE=my_db
-   TZ=Asia/Tokyo
-   NEXTJS_PORT=8080
-   ```
+```env
+MYSQL_HOST=mysql
+MYSQL_USER=root
+MYSQL_PORT=3306
+MYSQL_PASSWORD=password
+MYSQL_DATABASE=my_db
+TZ=Asia/Tokyo
+NEXTJS_PORT=8080
+```
 
-   - プロジェクトの依存関係をインストールするためのコマンド
+- プロジェクトの依存関係をインストールするためのコマンド
 
-   ```bash
-   docker compose run --rm app npm i
-   ```
+```bash
+docker compose run --rm app npm i
+```
+
+- コンテナ内で実行するには以下
+
+```bash
+docker exec -it app bash
+npm i
+```
+- テストコードの実行
+
+```bash
+docker exec -it app bash
+npm run test
+```
 
 2. **起動:**
 
-   - プロジェクトを起動するためのコマンド
+- プロジェクトを起動するためのコマンド
 
-   ```bash
-   docker compose up -d
-   ```
+```bash
+docker compose up -d
+```
+
+- MySQLへの接続コマンド
+```bash
+docker exec -it db sh
+mysql -u root -p
+password
+```
+
+- データベース接続
+```sql
+show databases;
+use my_db;
+-- (MySQL操作時”;”を忘れないこと!!)
+```
+
+- データベース内容確認
+```sql
+show tables from my_db;
+select * from users;
+```
+
+- データベース切断
+```sql
+exit
+```
+
+- プロジェクト終了
+```bash
+docker compose down
+```
 
 3. **API エンドポイント:**
 
