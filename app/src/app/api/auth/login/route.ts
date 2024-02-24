@@ -22,14 +22,15 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'SELECT id, user_name, password FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
       body.userName,
     ])) as RowDataPacket[];
-    connection.destroy();
+
     if (result.length > 0) {
       const user = result[0];
       const passwordMatch = comparePassword(body.password, user.password);
@@ -83,5 +84,7 @@ export const POST = async (request: NextRequest) => {
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };

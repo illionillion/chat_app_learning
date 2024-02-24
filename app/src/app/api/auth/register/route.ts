@@ -19,9 +19,9 @@ export const POST = async (request: NextRequest) => {
       },
     );
   }
-
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'INSERT INTO users (user_name, display_name, email, password) VALUES (?, ?, ?, ?)';
     const [result] = await connection.execute(query, [
@@ -30,7 +30,6 @@ export const POST = async (request: NextRequest) => {
       body.email,
       hashPassword(body.password),
     ]);
-    connection.destroy();
     // ユーザーが正常に登録された場合、result.insertIdを使用して新しいユーザーのIDを取得
     const userId = (result as any).insertId as string;
     const accessToken = await issueAccessToken(parseInt(userId));
@@ -57,5 +56,7 @@ export const POST = async (request: NextRequest) => {
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };

@@ -13,19 +13,20 @@ const saveAccessTokenToDatabase = async (
   userId: number,
   expiryDate: Date,
 ) => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const formattedExpiryDate = expiryDate.toLocaleString('ja-JP', {
       timeZone: 'Asia/Tokyo',
     });
     const query =
       'INSERT INTO access_tokens (token, user_id, expiry_date, is_active) VALUES (?, ?, ?, 1)';
     await connection.execute(query, [token, userId, formattedExpiryDate]);
-    connection.destroy();
   } catch (error) {
     console.error('Failed to save access token to database:', error);
-    // connection.destroy();
     throw error;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -37,14 +38,14 @@ const saveAccessTokenToDatabase = async (
 const getAccessTokenByUserId = async (
   userId: number,
 ): Promise<string | null> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW() AND is_active = 1';
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
-    connection.destroy();
 
     if (result.length > 0) {
       return result[0].token;
@@ -52,14 +53,15 @@ const getAccessTokenByUserId = async (
 
     return null;
   } catch (error) {
-    // connection.destroy();
     console.error('Failed to get access token:', error);
     throw error;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
 /**
- * アクセストークンが有効か
+ * アクセストークンが有効かどうか
  * @param userId
  * @param token
  * @returns
@@ -68,14 +70,14 @@ export const verifyAccessToken = async (
   userId: number,
   token: string,
 ): Promise<boolean> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'SELECT token FROM access_tokens WHERE user_id = ? AND expiry_date > NOW() AND is_active = 1';
     const [result] = (await connection.execute(query, [
       userId,
     ])) as RowDataPacket[];
-    connection.destroy();
 
     if (result.length > 0) {
       const storedToken = result[0].token;
@@ -84,9 +86,10 @@ export const verifyAccessToken = async (
 
     return false; // ユーザーIDに対応するトークンが見つからない場合も失敗とする
   } catch (error) {
-    // connection.destroy();
     console.error('Error verifying access token:', error);
     return false;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -122,20 +125,21 @@ export const issueAccessToken = async (userId: number): Promise<string> => {
  * @returns
  */
 export const deactivateAccessToken = async (userId: string, token: string) => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'UPDATE access_tokens SET is_active = 0 WHERE user_id = ? AND token = ? AND expiry_date > NOW() AND is_active = 1';
     const [result] = (await connection.execute(query, [
       userId,
       token,
     ])) as RowDataPacket[];
-    connection.destroy();
 
     return result.affectedRows > 0;
   } catch (error) {
-    // connection.destroy();
     console.error('Error deactivateAccessToken:', error);
     return false;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
