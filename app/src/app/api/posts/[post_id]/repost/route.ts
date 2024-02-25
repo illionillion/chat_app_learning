@@ -27,7 +27,7 @@ export const POST = async (
       },
     );
   }
-
+  let connection;
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
@@ -42,7 +42,7 @@ export const POST = async (
     }
 
     // 投稿のリポスト
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     const [existingRepost] = (await connection.execute(
       'SELECT * FROM reposts WHERE user_id = ? AND post_id = ? AND is_deleted = 0',
@@ -80,7 +80,7 @@ export const POST = async (
         },
       );
     }
-    connection.destroy();
+
     // リポスト数の更新
     await updateRepostTotal(postId);
 
@@ -102,6 +102,8 @@ export const POST = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -129,6 +131,7 @@ export const DELETE = async (
     );
   }
 
+  let connection;
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン認証
@@ -142,7 +145,7 @@ export const DELETE = async (
       );
     }
 
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     // リポストの削除
     const query =
@@ -185,5 +188,7 @@ export const DELETE = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
