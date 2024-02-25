@@ -8,8 +8,9 @@ import type { RowDataPacket } from 'mysql2';
  * @returns 更新後のいいね数
  */
 export const updateLikeTotal = async (postId: number): Promise<number> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     // いいね数の取得
     const query =
@@ -22,10 +23,11 @@ export const updateLikeTotal = async (postId: number): Promise<number> => {
     // postsテーブルへの反映
     const queryUpdatePost = 'UPDATE posts SET like_count = ? WHERE post_id = ?';
     await connection.execute(queryUpdatePost, [likeCount, postId]);
-    connection.destroy();
     return likeCount;
   } catch (error) {
     console.error('Update like total error:', error);
     throw error;
+  } finally {
+    if (connection) connection.destroy();
   }
 };

@@ -27,6 +27,9 @@ export const DELETE = async (
       },
     );
   }
+
+  let connection;
+
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン認証
@@ -40,7 +43,7 @@ export const DELETE = async (
       );
     }
 
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     const query =
       'UPDATE likes SET is_unliked = 1 WHERE user_id = ? AND post_id = ? AND is_unliked = 0';
@@ -61,7 +64,6 @@ export const DELETE = async (
         },
       );
     }
-    connection.destroy();
     await updateLikeTotal(postId);
 
     return new Response(
@@ -82,5 +84,7 @@ export const DELETE = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };

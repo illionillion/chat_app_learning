@@ -27,7 +27,7 @@ export const POST = async (
       },
     );
   }
-
+  let connection;
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
@@ -42,7 +42,7 @@ export const POST = async (
     }
 
     // 投稿のいいね
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     const [existingLikes] = (await connection.execute(
       'SELECT * FROM likes WHERE user_id = ? AND post_id = ? AND is_unliked = 0',
@@ -80,7 +80,7 @@ export const POST = async (
         },
       );
     }
-    connection.destroy();
+
     await updateLikeTotal(postId);
 
     return new Response(
@@ -101,5 +101,7 @@ export const POST = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
