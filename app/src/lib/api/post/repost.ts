@@ -7,8 +7,9 @@ import mysql_connection from '../db/connection';
  * @returns
  */
 export const updateRepostTotal = async (postId: number): Promise<number> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     // リポスト数の取得
     const query =
@@ -22,10 +23,11 @@ export const updateRepostTotal = async (postId: number): Promise<number> => {
     const queryUpdatePost =
       'UPDATE posts SET repost_count = ? WHERE post_id = ?';
     await connection.execute(queryUpdatePost, [repostCount, postId]);
-    connection.destroy();
     return repostCount;
   } catch (error) {
     console.error('Update repost total error:', error);
     throw error;
+  } finally {
+    if (connection) connection.destroy();
   }
 };

@@ -2,8 +2,9 @@ import type { RowDataPacket } from 'mysql2';
 import mysql_connection from '../db/connection';
 
 export const updateReplyTotal = async (postId: number): Promise<number> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     // リプライ数の取得
     const query =
       'SELECT COUNT(*) as replyCount FROM replies where post_id = ? AND is_deleted = 0';
@@ -15,7 +16,6 @@ export const updateReplyTotal = async (postId: number): Promise<number> => {
     const queryUpdatePost =
       'UPDATE posts SET reply_count = ? WHERE post_id = ?';
     await connection.execute(queryUpdatePost, [replyCount, postId]);
-    connection.destroy();
     console.log('postId:', postId);
     console.log('replyCount:', replyCount);
 
@@ -23,5 +23,7 @@ export const updateReplyTotal = async (postId: number): Promise<number> => {
   } catch (error) {
     console.error('Update reply total error:', error);
     throw error;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
