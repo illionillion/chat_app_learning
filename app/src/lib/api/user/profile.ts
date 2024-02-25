@@ -9,8 +9,9 @@ import type { RowDataPacket } from 'mysql2';
 export const getUserIdFromUserName = async (
   user_name: string,
 ): Promise<number | null> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query = 'SELECT id FROM users WHERE user_name = ?';
     const [result] = (await connection.execute(query, [
       user_name,
@@ -24,6 +25,8 @@ export const getUserIdFromUserName = async (
   } catch (error) {
     console.error('Error fetching user ID:', error);
     return null;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -43,8 +46,9 @@ export const updateProfile = async (
   userId: number,
   updatedProfileData: UpdatedProfileDataType,
 ): Promise<boolean> => {
+  let connection;
   try {
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     // 更新クエリを構築
     const setClause: string[] = [];
@@ -74,7 +78,6 @@ export const updateProfile = async (
         query,
         setValues,
       )) as RowDataPacket[];
-      connection.destroy();
       // 更新が成功したかどうかを確認
       return result.affectedRows > 0;
     } else {
@@ -84,5 +87,7 @@ export const updateProfile = async (
   } catch (error) {
     console.error('Error updating profile:', error);
     return false;
+  } finally {
+    if (connection) connection.destroy();
   }
 };
