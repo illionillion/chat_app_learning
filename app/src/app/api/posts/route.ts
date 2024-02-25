@@ -3,15 +3,18 @@ import mysql_connection from '@/lib/api/db/connection';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
+/**
+ * 投稿一覧を全て取得
+ * @returns
+ */
 export const GET = async () => {
+  let connection;
   try {
     // リプライを取得する処理を実行する
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'SELECT p.post_id, p.user_id, p.content, p.image_path, p.like_count, p.repost_count, p.reply_count, p.created_at, u.user_name, u.display_name FROM posts p JOIN users u ON p.user_id = u.id WHERE p.is_deleted = 0';
     const [result] = (await connection.execute(query)) as RowDataPacket[];
-    connection.destroy();
-
     return new Response(
       JSON.stringify({
         posts: result,
@@ -27,6 +30,8 @@ export const GET = async () => {
       JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -49,6 +54,7 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
+  let connection;
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
@@ -56,13 +62,11 @@ export const POST = async (request: NextRequest) => {
 
     if (isAuthenticated) {
       // 投稿の作成
-      const connection = await mysql_connection();
+      connection = await mysql_connection();
       const query =
         'INSERT INTO posts (user_id, content, created_at) VALUES (?, ?, now())';
       const [result] = await connection.execute(query, [userId, content]);
-
       const postId = (result as any).insertId as string;
-      connection.destroy();
       return new Response(
         JSON.stringify({
           message: '投稿が正常に作成されました。',
@@ -91,5 +95,7 @@ export const POST = async (request: NextRequest) => {
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };

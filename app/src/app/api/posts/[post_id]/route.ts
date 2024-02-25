@@ -13,15 +13,15 @@ export const GET = async (
   { params }: { params: { post_id: number } },
 ) => {
   const { post_id: postId } = params;
+  let connection;
   try {
     // 投稿の取得
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'SELECT post_id, user_id, content, image_path, like_count, repost_count, reply_count, created_at FROM posts WHERE post_id = ? AND is_deleted = 0';
     const [result] = (await connection.execute(query, [
       postId,
     ])) as RowDataPacket[];
-    connection.destroy();
     if (result.length > 0) {
       const post = result[0];
       return new Response(
@@ -62,6 +62,8 @@ export const GET = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -88,7 +90,7 @@ export const DELETE = async (
       },
     );
   }
-
+  let connection;
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
@@ -105,7 +107,7 @@ export const DELETE = async (
     }
 
     // 投稿の更新（論理削除）
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'UPDATE posts SET is_deleted = 1 WHERE post_id = ? AND user_id = ? AND is_deleted = 0';
     const [result] = (await connection.execute(query, [
@@ -147,5 +149,7 @@ export const DELETE = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
