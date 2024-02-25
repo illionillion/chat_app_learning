@@ -32,6 +32,8 @@ export const POST = async (
     );
   }
 
+  let connection;
+
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
@@ -47,7 +49,7 @@ export const POST = async (
     }
 
     // 投稿の作成
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
 
     const query =
       'INSERT INTO replies (user_id, post_id, parent_reply_id, reply_content, created_at) VALUES (?, ?, ?, ?, now())';
@@ -57,7 +59,6 @@ export const POST = async (
       parentReplyId ? parentReplyId : null,
       replyContent,
     ]);
-    connection.destroy();
     const replyId = (result as any).insertId as string;
 
     await updateReplyTotal(postId);
@@ -82,5 +83,7 @@ export const POST = async (
         headers: { 'Content-Type': 'application/json' },
       },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };

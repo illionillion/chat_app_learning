@@ -15,16 +15,16 @@ export const GET = async (
   { params }: { params: { reply_id: number } },
 ) => {
   const { reply_id: replyId } = params;
+  let connection;
 
   try {
     // リプライを取得する処理を実行する
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const query =
       'SELECT reply_id, user_id, post_id, parent_reply_id, reply_content, created_at FROM replies WHERE reply_id = ? AND is_deleted = 0';
     const [result] = (await connection.execute(query, [
       replyId,
     ])) as RowDataPacket[];
-    connection.destroy();
 
     if (result.length === 0) {
       return new Response(
@@ -53,6 +53,8 @@ export const GET = async (
       JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
 
@@ -80,6 +82,8 @@ export const DELETE = async (
     );
   }
 
+  let connection;
+
   try {
     const accessToken = token.replace('Bearer ', '').trim();
     // トークン検証
@@ -96,7 +100,7 @@ export const DELETE = async (
     }
 
     // リプライを削除する処理を実行する
-    const connection = await mysql_connection();
+    connection = await mysql_connection();
     const updateQuery =
       'UPDATE replies SET is_deleted = 1 WHERE reply_id = ? AND user_id = ? AND post_id = ?';
     const [result] = (await connection.execute(updateQuery, [
@@ -104,7 +108,6 @@ export const DELETE = async (
       userId,
       postId,
     ])) as RowDataPacket[];
-    connection.destroy();
 
     await updateReplyTotal(postId);
 
@@ -127,5 +130,7 @@ export const DELETE = async (
       JSON.stringify({ message: 'サーバーエラーが発生しました。' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } },
     );
+  } finally {
+    if (connection) connection.destroy();
   }
 };
