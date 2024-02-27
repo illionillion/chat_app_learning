@@ -1,3 +1,4 @@
+import { StateContext } from '@/lib/components/state/authContext';
 import type { PostData } from '@/lib/types/PostData';
 import {
   Avatar,
@@ -10,11 +11,13 @@ import {
   ListItem,
   Text,
   VStack,
+  useNotice,
 } from '@yamada-ui/react';
 import { Heart, MessageSquare, Repeat2 } from 'lucide-react';
-import type { FC } from 'react';
+import { useContext, type FC, useState } from 'react';
 
 export const PostItem: FC<PostData> = ({
+  post_id,
   user_name,
   display_name,
   created_at,
@@ -22,12 +25,76 @@ export const PostItem: FC<PostData> = ({
   like_count,
   repost_count,
   reply_count,
+  likes,
 }) => {
   // 日時文字列をDateオブジェクトに変換
   const date = new Date(created_at);
   const convertJST = new Date(date);
   convertJST.setHours(convertJST.getHours() - 9);
   const formattedTime = convertJST.toLocaleString('ja-JP').slice(0, -3);
+  const { userData } = useContext(StateContext);
+  const notice = useNotice();
+  const [isLiked, setIsLiked] = useState<boolean>(
+    likes.includes(userData?.userId || 0),
+  );
+  const [likeTotal, setLikeTotal] = useState<number>(like_count);
+  const handleLikeClick = async () => {
+    try {
+      const response = await fetch(`/api/posts/${post_id}/like`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData?.token}`,
+        },
+        body: JSON.stringify({
+          userId: userData?.userId,
+        }),
+      });
+      if (response.ok) {
+        notice({
+          title: '投稿にいいねされました。',
+          placement: 'bottom',
+          status: 'success',
+          isClosable: true,
+        });
+        setIsLiked(true);
+        setLikeTotal((prev) => prev + 1);
+      }
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleUnLikeClick = async () => {
+    try {
+      const response = await fetch(`/api/posts/${post_id}/unlike`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData?.token}`,
+        },
+        body: JSON.stringify({
+          userId: userData?.userId,
+        }),
+      });
+      if (response.ok) {
+        notice({
+          title: 'いいねが取り消されました。',
+          placement: 'bottom',
+          status: 'success',
+          isClosable: true,
+        });
+        setIsLiked(false);
+        setLikeTotal((prev) => prev - 1);
+      }
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <ListItem as={Card} flexDir='row'>
       <Box pt='md' pl='md'>
@@ -67,9 +134,10 @@ export const PostItem: FC<PostData> = ({
             variant='ghost'
             size='xs'
             gap={1}
-            leftIcon={<Heart size='16px' />}
+            leftIcon={<Heart size='16px' color={isLiked ? 'red' : 'black'} />}
+            onClick={!isLiked ? handleLikeClick : handleUnLikeClick}
           >
-            {like_count}
+            {likeTotal}
           </Button>
         </CardFooter>
       </VStack>

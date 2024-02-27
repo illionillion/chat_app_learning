@@ -1,5 +1,6 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
 import mysql_connection from '@/lib/api/db/connection';
+import { getLikedUsers } from '@/lib/api/post/like';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
@@ -15,9 +16,16 @@ export const GET = async () => {
     const query =
       'SELECT p.post_id, p.user_id, p.content, p.image_path, p.like_count, p.repost_count, p.reply_count, p.created_at, u.user_name, u.display_name FROM posts p JOIN users u ON p.user_id = u.id WHERE p.is_deleted = 0';
     const [result] = (await connection.execute(query)) as RowDataPacket[];
+    // 各postのlike取得
+    const posts = await Promise.all(
+      result.map(async (post: any) => {
+        const likes = await getLikedUsers(post?.post_id);
+        return { ...post, likes: likes };
+      }),
+    );
     return new Response(
       JSON.stringify({
-        posts: result,
+        posts: posts,
       }),
       {
         status: 200,

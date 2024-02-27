@@ -9,4 +9,5 @@ export type PostData = {
   repost_count: number;
   reply_count: number;
   created_at: string;
+  likes: number[];
 };

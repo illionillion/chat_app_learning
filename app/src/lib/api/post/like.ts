@@ -31,3 +31,28 @@ export const updateLikeTotal = async (postId: number): Promise<number> => {
     if (connection) connection.destroy();
   }
 };
+
+/**
+ * 投稿にいいねしているユーザーの取得
+ * @param postId
+ * @returns
+ */
+export const getLikedUsers = async (postId: number): Promise<number[]> => {
+  let connection;
+  try {
+    connection = await mysql_connection();
+
+    const query =
+      'SELECT user_id FROM likes WHERE post_id = ? AND is_unliked = 0';
+    const [result] = (await connection.execute(query, [
+      postId,
+    ])) as RowDataPacket[];
+
+    return result.map((post: any) => post?.user_id) as number[];
+  } catch (error) {
+    console.error('Get Likes postId error:', error);
+    return [];
+  } finally {
+    if (connection) connection.destroy();
+  }
+};
