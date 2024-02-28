@@ -31,3 +31,27 @@ export const updateRepostTotal = async (postId: number): Promise<number> => {
     if (connection) connection.destroy();
   }
 };
+
+/**
+ * すでにリポストしているユーザーの取得
+ * @param postId
+ * @returns
+ */
+export const getRepostedUsers = async (postId: number): Promise<number[]> => {
+  let connection;
+  try {
+    connection = await mysql_connection();
+    const query =
+      'SELECT user_id FROM reposts WHERE post_id = ? AND is_deleted = 0';
+    const [result] = (await connection.execute(query, [
+      postId,
+    ])) as RowDataPacket[];
+
+    return result.map((post: any) => post?.user_id) as number[];
+  } catch (error) {
+    console.error('Get Reposts postId error:', error);
+    return [];
+  } finally {
+    if (connection) connection.destroy();
+  }
+};

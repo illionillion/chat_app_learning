@@ -1,6 +1,7 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
 import mysql_connection from '@/lib/api/db/connection';
 import { getLikedUsers } from '@/lib/api/post/like';
+import { getRepostedUsers } from '@/lib/api/post/repost';
 import type { RowDataPacket } from 'mysql2';
 import type { NextRequest } from 'next/server';
 
@@ -20,7 +21,8 @@ export const GET = async () => {
     const posts = await Promise.all(
       result.map(async (post: any) => {
         const likes = await getLikedUsers(post?.post_id);
-        return { ...post, likes: likes };
+        const reposts = await getRepostedUsers(post?.post_id);
+        return { ...post, likes, reposts };
       }),
     );
     return new Response(
