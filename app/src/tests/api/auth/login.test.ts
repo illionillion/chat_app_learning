@@ -24,4 +24,92 @@ describe('/api/auth/login', () => {
       },
     });
   });
+  it('存在しないユーザー名のときエラーになるか', async () => {
+    await testApiHandler({
+      appHandler: appHandlerLogin,
+      async test({ fetch }) {
+        const userData = {
+          userName: 'noName',
+          password: 'password',
+        };
+        const response = await fetch({
+          method: 'POST',
+          body: JSON.stringify(userData),
+        });
+        const json = await response.json();
+        expect(response.status).toStrictEqual(404);
+        expect(json.userName).toStrictEqual(userData.userName);
+        expect(Object.keys(json).includes('userId')).toStrictEqual(true);
+        expect(
+          response.headers.get('Authorization')?.includes('Bearer '),
+        ).toStrictEqual(true);
+      },
+    });
+  });
+  it('パスワードを間違えたときエラーになるか', async () => {
+    await testApiHandler({
+      appHandler: appHandlerLogin,
+      async test({ fetch }) {
+        const userData = {
+          userName: 'Yusuke',
+          password: 'password',
+        };
+        const response = await fetch({
+          method: 'POST',
+          body: JSON.stringify(userData),
+        });
+        const json = await response.json();
+        expect(response.status).toStrictEqual(404);
+        expect(json.userName).toStrictEqual(userData.userName);
+        expect(Object.keys(json).includes('userId')).toStrictEqual(true);
+        expect(
+          response.headers.get('Authorization')?.includes('Bearer '),
+        ).toStrictEqual(true);
+      },
+    });
+  });
+  it('ユーザー名が空のときエラーになるか', async () => {
+    await testApiHandler({
+      appHandler: appHandlerLogin,
+      async test({ fetch }) {
+        const userData = {
+          userName: '',
+          password: 'password',
+        };
+        const response = await fetch({
+          method: 'POST',
+          body: JSON.stringify(userData),
+        });
+        const json = await response.json();
+        expect(response.status).toStrictEqual(404);
+        expect(json.userName).toStrictEqual(userData.userName);
+        expect(Object.keys(json).includes('userId')).toStrictEqual(true);
+        expect(
+          response.headers.get('Authorization')?.includes('Bearer '),
+        ).toStrictEqual(true);
+      },
+    });
+  });
+  it('パスワードが空のときエラーになるか', async () => {
+    await testApiHandler({
+      appHandler: appHandlerLogin,
+      async test({ fetch }) {
+        const userData = {
+          userName: 'Yusuke',
+          password: '',
+        };
+        const response = await fetch({
+          method: 'POST',
+          body: JSON.stringify(userData),
+        });
+        const json = await response.json();
+        expect(response.status).toStrictEqual(404);
+        expect(json.userName).toStrictEqual(userData.userName);
+        expect(Object.keys(json).includes('userId')).toStrictEqual(true);
+        expect(
+          response.headers.get('Authorization')?.includes('Bearer '),
+        ).toStrictEqual(true);
+      },
+    });
+  });
 });
