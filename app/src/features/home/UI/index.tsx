@@ -9,9 +9,8 @@ import {
   VStack,
   useNotice,
 } from '@yamada-ui/react';
-import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useLayoutEffect, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { PostItem } from './components/PostItem';
@@ -21,8 +20,7 @@ type SubmitData = {
 };
 
 export const Home: FC = () => {
-  const { userData, onLogout } = useContext(StateContext);
-  const router = useRouter();
+  const { userData } = useContext(StateContext);
   const notice = useNotice();
   const [posts, setPosts] = useState<PostData[]>([]);
   const {
@@ -66,31 +64,6 @@ export const Home: FC = () => {
     }
   };
 
-  const checkToken = async () => {
-    try {
-      const response = await fetch('/api/auth/verify', {
-        method: 'POST',
-        body: JSON.stringify({
-          userId: userData?.userId,
-        }),
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${userData?.token}`,
-        },
-      });
-
-      const json = await response.json();
-
-      // 正しくないならログアウト
-      if (!json.authenticated) {
-        await onLogout();
-        return;
-      }
-    } catch (error) {
-      console.error('verify', error);
-    }
-  };
-
   const fetchPosts = async () => {
     try {
       const response = await fetch('/api/posts');
@@ -102,17 +75,9 @@ export const Home: FC = () => {
     }
   };
 
-  useEffect(() => {
-    console.log(userData);
-    if (userData && Object.values(userData).every((v) => !!v === true)) {
-      console.log('ログイン済み');
-      // 認証
-      checkToken().then(() => fetchPosts());
-    } else {
-      console.log('未ログイン');
-      router.push('/login');
-    }
-  }, [userData]);
+  useLayoutEffect(() => {
+    fetchPosts();
+  }, []);
 
   return (
     <VStack>
