@@ -52,7 +52,7 @@ describe('/api/auth/login', () => {
       async test({ fetch }) {
         const userData = {
           userName: 'Yusuke',
-          password: 'password',
+          password: 'nopass',
         };
         const response = await fetch({
           method: 'POST',
