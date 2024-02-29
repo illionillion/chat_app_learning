@@ -59,7 +59,7 @@ describe('/api/auth/login', () => {
           body: JSON.stringify(userData),
         });
         // const json = await response.json();
-        expect(response.status).toStrictEqual(404);
+        expect(response.status).toStrictEqual(401);
         // expect(json.userName).toStrictEqual(userData.userName);
         // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
         // expect(
@@ -81,7 +81,7 @@ describe('/api/auth/login', () => {
           body: JSON.stringify(userData),
         });
         // const json = await response.json();
-        expect(response.status).toStrictEqual(404);
+        expect(response.status).toStrictEqual(400);
         // expect(json.userName).toStrictEqual(userData.userName);
         // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
         // expect(
@@ -103,7 +103,7 @@ describe('/api/auth/login', () => {
           body: JSON.stringify(userData),
         });
         // const json = await response.json();
-        expect(response.status).toStrictEqual(404);
+        expect(response.status).toStrictEqual(400);
         // expect(json.userName).toStrictEqual(userData.userName);
         // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
         // expect(
