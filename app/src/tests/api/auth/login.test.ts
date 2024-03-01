@@ -36,13 +36,7 @@ describe('/api/auth/login', () => {
           method: 'POST',
           body: JSON.stringify(userData),
         });
-        // const json = await response.json();
         expect(response.status).toStrictEqual(404);
-        // expect(json.userName).toStrictEqual(userData.userName);
-        // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
-        // expect(
-        //   response.headers.get('Authorization')?.includes('Bearer '),
-        // ).toStrictEqual(true);
       },
     });
   });
@@ -58,13 +52,7 @@ describe('/api/auth/login', () => {
           method: 'POST',
           body: JSON.stringify(userData),
         });
-        // const json = await response.json();
         expect(response.status).toStrictEqual(401);
-        // expect(json.userName).toStrictEqual(userData.userName);
-        // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
-        // expect(
-        //   response.headers.get('Authorization')?.includes('Bearer '),
-        // ).toStrictEqual(true);
       },
     });
   });
@@ -80,13 +68,7 @@ describe('/api/auth/login', () => {
           method: 'POST',
           body: JSON.stringify(userData),
         });
-        // const json = await response.json();
         expect(response.status).toStrictEqual(400);
-        // expect(json.userName).toStrictEqual(userData.userName);
-        // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
-        // expect(
-        //   response.headers.get('Authorization')?.includes('Bearer '),
-        // ).toStrictEqual(true);
       },
     });
   });
@@ -102,13 +84,7 @@ describe('/api/auth/login', () => {
           method: 'POST',
           body: JSON.stringify(userData),
         });
-        // const json = await response.json();
         expect(response.status).toStrictEqual(400);
-        // expect(json.userName).toStrictEqual(userData.userName);
-        // expect(Object.keys(json).includes('userId')).toStrictEqual(true);
-        // expect(
-        //   response.headers.get('Authorization')?.includes('Bearer '),
-        // ).toStrictEqual(true);
       },
     });
   });
