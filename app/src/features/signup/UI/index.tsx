@@ -8,12 +8,13 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Link,
+  Link as UILink,
   VStack,
   useBoolean,
   useNotice,
 } from '@yamada-ui/react';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { useContext, useEffect } from 'react';
@@ -225,7 +226,9 @@ export const SignupForm: FC = () => {
           新規登録
         </Button>
         <Box textAlign='center'>
-          <Link href='/login'>ログイン</Link>
+          <UILink href='/login' as={Link}>
+            ログイン
+          </UILink>
         </Box>
       </VStack>
     </form>

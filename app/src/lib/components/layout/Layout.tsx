@@ -18,6 +18,7 @@ import {
 } from 'react';
 import { StateContext } from '../state/authContext';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface LayoutProps {
   children: ReactNode;
@@ -79,7 +80,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             w='full'
             justifyContent='left'
-            as='a'
+            as={Link}
             variant='ghost'
             href='/'
             leftIcon={<Home />}
@@ -91,7 +92,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             w='full'
             justifyContent='left'
-            as='a'
+            as={Link}
             variant='ghost'
             href='/'
             leftIcon={<Search />}
@@ -103,7 +104,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             w='full'
             justifyContent='left'
-            as='a'
+            as={Link}
             variant='ghost'
             href='/'
             leftIcon={<Bell />}
@@ -115,7 +116,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             w='full'
             justifyContent='left'
-            as='a'
+            as={Link}
             variant='ghost'
             href='/'
             leftIcon={<Mail />}
@@ -127,7 +128,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             w='full'
             justifyContent='left'
-            as='a'
+            as={Link}
             variant='ghost'
             href='/'
             leftIcon={<UserRound />}

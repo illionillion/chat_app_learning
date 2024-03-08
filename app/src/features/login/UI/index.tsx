@@ -8,12 +8,13 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  Link,
+  Link as UILink,
   VStack,
   useBoolean,
   useNotice,
 } from '@yamada-ui/react';
 import { Eye, EyeOff } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, type FC, useEffect } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
@@ -143,7 +144,9 @@ export const LoginForm: FC = () => {
           ログイン
         </Button>
         <Box textAlign='center'>
-          <Link href='/signup'>新規登録</Link>
+          <UILink href='/signup' as={Link}>
+            新規登録
+          </UILink>
         </Box>
       </VStack>
     </form>
