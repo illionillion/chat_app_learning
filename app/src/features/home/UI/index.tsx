@@ -4,7 +4,9 @@ import type { PostData } from '@/lib/types/PostData';
 import {
   Box,
   Button,
+  Center,
   List,
+  Text,
   Textarea,
   VStack,
   useNotice,
@@ -112,9 +114,13 @@ export const Home: FC = () => {
         </form>
       </Box>
       <List px={2}>
-        {posts &&
-          posts.length > 0 &&
-          posts.map((v, i) => <PostItem key={`${v.post_id}-${i}`} {...v} />)}
+        {posts && posts.length > 0 ? (
+          posts.map((v, i) => <PostItem key={`${v.post_id}-${i}`} {...v} />)
+        ) : (
+          <Center>
+            <Text>投稿がありません</Text>
+          </Center>
+        )}
       </List>
     </VStack>
   );

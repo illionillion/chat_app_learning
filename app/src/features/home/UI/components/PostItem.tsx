@@ -38,6 +38,10 @@ export const PostItem: FC<PostData> = ({
     likes.includes(userData?.userId || 0),
   );
   const [likeTotal, setLikeTotal] = useState<number>(like_count);
+  const [isReposted, setIsReposted] = useState<boolean>(
+    likes.includes(userData?.userId || 0),
+  );
+  const [repostTotal, setRepostTotal] = useState<number>(repost_count);
   const handleLikeClick = async () => {
     try {
       const response = await fetch(`/api/posts/${post_id}/like`, {
@@ -94,6 +98,62 @@ export const PostItem: FC<PostData> = ({
       console.error(error);
     }
   };
+  const handleRepostClick = async () => {
+    try {
+      const response = await fetch(`/api/posts/${post_id}/repost`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData?.token}`,
+        },
+        body: JSON.stringify({
+          userId: userData?.userId,
+        }),
+      });
+      if (response.ok) {
+        notice({
+          title: '投稿をリポストしました。',
+          placement: 'bottom',
+          status: 'success',
+          isClosable: true,
+        });
+        setIsReposted(true);
+        setRepostTotal((prev) => prev + 1);
+      }
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleUnRepostClick = async () => {
+    try {
+      const response = await fetch(`/api/posts/${post_id}/repost`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData?.token}`,
+        },
+        body: JSON.stringify({
+          userId: userData?.userId,
+        }),
+      });
+      if (response.ok) {
+        notice({
+          title: 'リポストが取り消されました。',
+          placement: 'bottom',
+          status: 'success',
+          isClosable: true,
+        });
+        setIsReposted(false);
+        setRepostTotal((prev) => prev - 1);
+      }
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <ListItem as={Card} flexDir='row'>
@@ -126,9 +186,12 @@ export const PostItem: FC<PostData> = ({
             variant='ghost'
             size='xs'
             gap={1}
-            leftIcon={<Repeat2 size='16px' />}
+            leftIcon={
+              <Repeat2 size='16px' color={isReposted ? 'green' : 'black'} />
+            }
+            onClick={!isReposted ? handleRepostClick : handleUnRepostClick}
           >
-            {repost_count}
+            {repostTotal}
           </Button>
           <Button
             variant='ghost'
