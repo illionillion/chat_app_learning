@@ -163,10 +163,10 @@ export const PostItem: FC<PostData> = ({
       <VStack gap={0}>
         <CardHeader pl='sm'>
           <Text fontSize='xl'>{display_name}</Text>
-          <Text fontSize='md' color='blackAlpha.500'>
+          <Text fontSize='md' color='gray.500'>
             {user_name}
           </Text>
-          <Text fontSize='sm' color='blackAlpha.500'>
+          <Text fontSize='sm' color='gray.500'>
             {formattedTime}
           </Text>
         </CardHeader>

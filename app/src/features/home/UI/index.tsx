@@ -9,6 +9,7 @@ import {
   Text,
   Textarea,
   VStack,
+  useColorMode,
   useNotice,
 } from '@yamada-ui/react';
 import type { FC } from 'react';
@@ -23,6 +24,7 @@ type SubmitData = {
 
 export const Home: FC = () => {
   const { userData } = useContext(StateContext);
+  const { colorMode } = useColorMode();
   const notice = useNotice();
   const [posts, setPosts] = useState<PostData[]>([]);
   const {
@@ -89,7 +91,7 @@ export const Home: FC = () => {
         borderBottom='1px solid black'
         position='sticky'
         top={0}
-        bg='white'
+        bg={colorMode === 'light' ? 'white' : 'black'}
         zIndex={99999}
       >
         <form onSubmit={handleSubmit(onSubmit)}>

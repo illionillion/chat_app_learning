@@ -7,8 +7,18 @@ import {
   List,
   ListItem,
   Loading,
+  useColorMode,
 } from '@yamada-ui/react';
-import { Bell, Home, LogOut, Mail, Search, UserRound } from 'lucide-react';
+import {
+  Bell,
+  Home,
+  LogOut,
+  Mail,
+  Moon,
+  Search,
+  Sun,
+  UserRound,
+} from 'lucide-react';
 import {
   useContext,
   type FC,
@@ -25,6 +35,7 @@ interface LayoutProps {
 }
 
 export const Layout: FC<LayoutProps> = ({ children }) => {
+  const { colorMode, toggleColorMode } = useColorMode();
   const { onLogout, userData } = useContext(StateContext);
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const router = useRouter();
@@ -134,6 +145,16 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             leftIcon={<UserRound />}
           >
             プロフィール
+          </Button>
+        </ListItem>
+        <ListItem>
+          <Button
+            justifyContent='left'
+            variant='ghost'
+            leftIcon={colorMode === 'light' ? <Sun /> : <Moon />}
+            onClick={toggleColorMode}
+          >
+            {colorMode === 'light' ? 'ライト' : 'ダーク'}モード
           </Button>
         </ListItem>
         <ListItem>
