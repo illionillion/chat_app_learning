@@ -86,6 +86,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         justifyContent='center'
         px={2}
         borderRight='1px solid black'
+        borderRightColor={['blackAlpha.500', 'whiteAlpha.500']}
       >
         <ListItem>
           <Button

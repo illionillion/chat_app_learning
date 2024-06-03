@@ -87,6 +87,7 @@ export const Home: FC = () => {
         px={1}
         py={2}
         borderBottom='1px solid black'
+        borderBottomColor={['blackAlpha.500', 'whiteAlpha.500']}
         position='sticky'
         top={0}
         bg={['white', 'black']}
