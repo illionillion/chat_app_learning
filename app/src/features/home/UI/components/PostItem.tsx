@@ -179,6 +179,7 @@ export const PostItem: FC<PostData> = ({
             size='xs'
             gap={1}
             leftIcon={<MessageSquare size='16px' />}
+            color={['blackAlpha.500', 'whiteAlpha.500']}
           >
             {reply_count}
           </Button>
@@ -186,9 +187,11 @@ export const PostItem: FC<PostData> = ({
             variant='ghost'
             size='xs'
             gap={1}
-            leftIcon={
-              <Repeat2 size='16px' color={isReposted ? 'green' : 'black'} />
-            }
+            leftIcon={<Repeat2 size='16px' />}
+            color={[
+              isReposted ? 'green' : 'blackAlpha.500',
+              isReposted ? 'green' : 'whiteAlpha.500',
+            ]}
             onClick={!isReposted ? handleRepostClick : handleUnRepostClick}
           >
             {repostTotal}
@@ -197,7 +200,11 @@ export const PostItem: FC<PostData> = ({
             variant='ghost'
             size='xs'
             gap={1}
-            leftIcon={<Heart size='16px' color={isLiked ? 'red' : 'black'} />}
+            color={[
+              isLiked ? 'red' : 'blackAlpha.500',
+              isLiked ? 'red' : 'whiteAlpha.500',
+            ]}
+            leftIcon={<Heart size='16px' />}
             onClick={!isLiked ? handleLikeClick : handleUnLikeClick}
           >
             {likeTotal}
