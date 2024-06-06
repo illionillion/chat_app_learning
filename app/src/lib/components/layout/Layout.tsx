@@ -142,7 +142,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             justifyContent='left'
             as={Link}
             variant='ghost'
-            href='/'
+            href={`/${userData?.userName}`}
             leftIcon={<UserRound />}
           >
             プロフィール
