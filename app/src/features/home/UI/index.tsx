@@ -16,12 +16,14 @@ import { useContext, useLayoutEffect, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 import { PostItem } from './components/PostItem';
+import { io } from 'socket.io-client';
 
 type SubmitData = {
   content: string;
 };
 
 export const Home: FC = () => {
+  const socket = io({ autoConnect: false });
   const { userData } = useContext(StateContext);
   const notice = useNotice();
   const [posts, setPosts] = useState<PostData[]>([]);
@@ -60,6 +62,14 @@ export const Home: FC = () => {
         });
         reset();
         fetchPosts();
+        await fetch('/api/socketio', { method: 'POST' });
+        // 既に接続済だったら何もしない
+        if (socket.connected) {
+          return;
+        }
+        // socket.ioサーバに接続
+        socket.connect();
+        socket.emit('onSubmit'); // 送信
       }
     } catch (error) {
       console.error(error);
@@ -79,6 +89,25 @@ export const Home: FC = () => {
 
   useLayoutEffect(() => {
     fetchPosts();
+    fetch('/api/socketio', { method: 'POST' }).then(() => {
+      // 既に接続済だったら何もしない
+      if (socket.connected) {
+        return;
+      }
+      // socket.ioサーバに接続
+      socket.connect();
+      socket.on('sync', () => {
+        console.log('sync');
+        fetchPosts();
+      });
+      fetchPosts();
+    });
+
+    return () => {
+      // 登録したイベントは全てクリーンアップ
+      socket.off('connect');
+      socket.off('msg');
+    };
   }, []);
 
   return (
