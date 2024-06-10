@@ -102,6 +102,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         </ListItem>
         <ListItem>
           <Button
+            isDisabled
             w='full'
             justifyContent='left'
             as={Link}
@@ -114,6 +115,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         </ListItem>
         <ListItem>
           <Button
+            isDisabled
             w='full'
             justifyContent='left'
             as={Link}
@@ -126,6 +128,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         </ListItem>
         <ListItem>
           <Button
+            isDisabled
             w='full'
             justifyContent='left'
             as={Link}

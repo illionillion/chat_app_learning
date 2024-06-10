@@ -14,6 +14,7 @@ import {
   useNotice,
 } from '@yamada-ui/react';
 import { Heart, MessageSquare, Repeat2 } from 'lucide-react';
+import Link from 'next/link';
 import { useContext, type FC, useState } from 'react';
 
 export const PostItem: FC<PostData> = ({
@@ -25,6 +26,7 @@ export const PostItem: FC<PostData> = ({
   like_count,
   repost_count,
   reply_count,
+  reposts,
   likes,
 }) => {
   // 日時文字列をDateオブジェクトに変換
@@ -39,7 +41,7 @@ export const PostItem: FC<PostData> = ({
   );
   const [likeTotal, setLikeTotal] = useState<number>(like_count);
   const [isReposted, setIsReposted] = useState<boolean>(
-    likes.includes(userData?.userId || 0),
+    reposts.includes(userData?.userId || 0),
   );
   const [repostTotal, setRepostTotal] = useState<number>(repost_count);
   const handleLikeClick = async () => {
@@ -158,7 +160,7 @@ export const PostItem: FC<PostData> = ({
   return (
     <ListItem as={Card} flexDir='row'>
       <Box pt='md' pl='md'>
-        <Avatar />
+        <Avatar as={Link} href={`/${user_name}`} />
       </Box>
       <VStack gap={0}>
         <CardHeader pl='sm'>
@@ -175,6 +177,7 @@ export const PostItem: FC<PostData> = ({
         </CardBody>
         <CardFooter pl='sm'>
           <Button
+            isDisabled
             variant='ghost'
             size='xs'
             gap={1}
