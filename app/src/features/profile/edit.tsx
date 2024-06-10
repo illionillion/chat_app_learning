@@ -9,7 +9,9 @@ import {
   Textarea,
   VStack,
   useAsync,
+  useNotice,
 } from '@yamada-ui/react';
+import { useRouter } from 'next/navigation';
 import { useContext } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
@@ -29,6 +31,9 @@ export const EditProfile = () => {
     formState: { errors, isSubmitting },
   } = useForm<ProfileData>();
 
+  const router = useRouter();
+  const notice = useNotice();
+
   const { loading } = useAsync(async () => {
     const response = await fetch(`/api/users/${userData?.userName}/profile`, {
       cache: 'no-cache',
@@ -39,7 +44,29 @@ export const EditProfile = () => {
   });
 
   const onSubmit: SubmitHandler<ProfileData> = async (data) => {
-    console.log(data);
+    const response = await fetch(`/api/users/${userData?.userName}/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData?.token}`,
+      },
+      body: JSON.stringify({
+        updatedProfileData: {
+          displayName: data.displayName,
+          description: data.description,
+        },
+      }),
+    });
+    if (response.ok) {
+      router.push(`/${userData?.userName}`);
+    } else {
+      notice({
+        title: '変更に失敗しました。',
+        placement: 'bottom',
+        status: 'error',
+        isClosable: true,
+      });
+    }
   };
 
   return (
@@ -67,7 +94,11 @@ export const EditProfile = () => {
             />
           </FormControl>
           <FormControl label='説明'>
-            <Textarea placeholder='説明を入力' isDisabled={loading} />
+            <Textarea
+              placeholder='説明を入力'
+              isDisabled={loading}
+              {...register('description')}
+            />
           </FormControl>
           <Button type='submit' isLoading={isSubmitting || loading}>
             変更

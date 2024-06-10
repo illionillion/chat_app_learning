@@ -17,6 +17,7 @@ import { useContext, type FC } from 'react';
 import { PostItem } from '../home/UI/components/PostItem';
 import type { PostData } from '@/lib/types/PostData';
 import type { UserData } from '@/lib/types/UserData';
+import Link from 'next/link';
 
 export const Profile: FC<{ userName: string }> = ({ userName }) => {
   const { userData } = useContext(StateContext);
@@ -52,7 +53,9 @@ export const Profile: FC<{ userName: string }> = ({ userName }) => {
           <Avatar alt={userName} size='xl' />
           {userData?.userName === userName && (
             <Box>
-              <Button>編集</Button>
+              <Button as={Link} href='/edit-profile'>
+                編集
+              </Button>
             </Box>
           )}
         </HStack>
