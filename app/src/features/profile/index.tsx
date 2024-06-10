@@ -21,10 +21,10 @@ import type { UserData } from '@/lib/types/UserData';
 export const Profile: FC<{ userName: string }> = ({ userName }) => {
   const { userData } = useContext(StateContext);
   const { value, loading } = useAsync(async () => {
-    const requestUser = await fetch(`/api/users/${userName}/profile`);
-    const user = (await requestUser.json()) as UserData;
-    const requestPosts = await fetch(`/api/users/${userName}/posts`);
-    const { posts } = (await requestPosts.json()) as { posts: PostData[] };
+    const responseUser = await fetch(`/api/users/${userName}/profile`);
+    const user = (await responseUser.json()) as UserData;
+    const responsePosts = await fetch(`/api/users/${userName}/posts`);
+    const { posts } = (await responsePosts.json()) as { posts: PostData[] };
     return { ...user, posts };
   });
 
