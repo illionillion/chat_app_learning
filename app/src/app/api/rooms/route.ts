@@ -50,6 +50,19 @@ export const POST = async (request: NextRequest) => {
     );
   }
 
+  // ユーザーリスト内の重複をチェック
+  const uniqueUsers = Array.from(new Set(users));
+  if (uniqueUsers.length !== users.length) {
+    return NextResponse.json(
+      {
+        message: 'ユーザーリストに重複があります。',
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
   if (!token) {
     return NextResponse.json(
       {
