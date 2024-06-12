@@ -79,3 +79,30 @@ CREATE TABLE replies (
     FOREIGN KEY (post_id) REFERENCES posts(post_id),
     FOREIGN KEY (parent_reply_id) REFERENCES replies(reply_id)
 );
+
+-- ルームテーブル
+CREATE TABLE message_room (
+    room_id INT PRIMARY KEY AUTO_INCREMENT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 関連テーブル
+CREATE TABLE message_relation (
+    relation_id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT,
+    room_id INT,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (room_id) REFERENCES message_room(room_id),
+    UNIQUE KEY unique_room_user (user_id, room_id)
+);
+
+-- メッセージテーブル
+CREATE TABLE message (
+    message_id INT PRIMARY KEY AUTO_INCREMENT,
+    room_id INT,
+    sender_id INT,
+    message_content TEXT,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (room_id) REFERENCES message_room(room_id),
+    FOREIGN KEY (sender_id) REFERENCES users(id)
+);
