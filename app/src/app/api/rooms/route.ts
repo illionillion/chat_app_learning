@@ -3,6 +3,28 @@ import { createRoom } from '@/lib/api/message';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
+export const GET = async (request: NextRequest) => {
+  const userId = request.nextUrl.searchParams.get('userId');
+
+  if (!userId) {
+    return NextResponse.json(
+      {
+        message: 'ユーザーIDが指定されていません。',
+      },
+      { status: 400 },
+    );
+  }
+
+  // userIdを使ってデータを取得するなどの処理を行う
+
+  return NextResponse.json(
+    {
+      message: 'ユーザーID: ' + userId,
+    },
+    { status: 200 },
+  );
+};
+
 export const POST = async (request: NextRequest) => {
   const { users, userId } = (await request.json()) as {
     users: number[];
