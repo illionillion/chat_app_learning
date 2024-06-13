@@ -46,3 +46,47 @@ export const createRoom = async (users: number[]) => {
     if (connection) connection.release();
   }
 };
+
+export const getRooms = async (userId: number) => {
+  let connection: PoolConnection | null = null;
+
+  try {
+    connection = await mysql_connection();
+
+    // ユーザーが参加しているルームの一覧を取得
+    const [result] = (await connection.execute(
+      `SELECT 
+          mr.room_id, 
+          u.id AS partner_id, 
+          u.user_name AS partner_username
+       FROM 
+          message_relation mr
+       JOIN 
+          users u ON mr.user_id != ? AND mr.room_id IN (
+            SELECT room_id 
+            FROM message_relation 
+            WHERE user_id = ?
+          ) AND mr.user_id = u.id`,
+      [userId, userId],
+    )) as RowDataPacket[];
+
+    const rooms = (
+      result as {
+        room_id: number;
+        partner_id: number;
+        partner_username: string;
+      }[]
+    ).map((v) => ({
+      roomId: v.room_id,
+      partnerId: v.partner_id,
+      partnerUsername: v.partner_username,
+    }));
+
+    return { isSuccess: true, rooms };
+  } catch (error) {
+    console.error('GetRooms Error: ', error);
+    return { isSuccess: false, rooms: [] };
+  } finally {
+    if (connection) connection.release();
+  }
+};

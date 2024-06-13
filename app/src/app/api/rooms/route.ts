@@ -1,12 +1,13 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
-import { createRoom } from '@/lib/api/message';
+import { createRoom, getRooms } from '@/lib/api/message';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export const GET = async (request: NextRequest) => {
   const userId = request.nextUrl.searchParams.get('userId');
+  const token = request.headers.get('Authorization');
 
-  if (!userId) {
+  if (!userId || isNaN(parseInt(userId))) {
     return NextResponse.json(
       {
         message: 'ユーザーIDが指定されていません。',
@@ -15,11 +16,49 @@ export const GET = async (request: NextRequest) => {
     );
   }
 
+  if (!token) {
+    return NextResponse.json(
+      {
+        message: 'トークンが指定されていません。',
+      },
+      { status: 400 },
+    );
+  }
+
+  const accessToken = token.replace('Bearer ', '').trim();
+  // トークン検証
+  const isAuthenticated = await verifyAccessToken(
+    parseInt(userId),
+    accessToken,
+  );
+
+  if (!isAuthenticated) {
+    return NextResponse.json(
+      {
+        message: '認証エラー。トークンが無効です。',
+      },
+      { status: 401 },
+    );
+  }
+
   // userIdを使ってデータを取得するなどの処理を行う
+  const { isSuccess, rooms } = await getRooms(parseInt(userId));
+
+  if (!isSuccess) {
+    return NextResponse.json(
+      {
+        message: 'ルームの取得に失敗しました。',
+      },
+      {
+        status: 500,
+      },
+    );
+  }
 
   return NextResponse.json(
     {
-      message: 'ユーザーID: ' + userId,
+      message: 'ルーム取得成功',
+      rooms,
     },
     { status: 200 },
   );
