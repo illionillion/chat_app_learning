@@ -90,3 +90,74 @@ export const getRooms = async (userId: number) => {
     if (connection) connection.release();
   }
 };
+
+export const sendMessage = async (
+  roomId: number,
+  senderId: number,
+  receiverId: number,
+  content: string,
+) => {
+  let connection: PoolConnection | null = null;
+
+  if (senderId === receiverId) {
+    return {
+      isSuccess: false,
+      message: '自分自身にメッセージを送信することはできません。',
+    };
+  }
+
+  try {
+    connection = await mysql_connection();
+
+    // 指定されたチャットルームが存在するかを確認するクエリ
+    const [roomResult] = (await connection.execute(
+      'SELECT * FROM message_room WHERE room_id = ? LIMIT 1',
+      [roomId],
+    )) as RowDataPacket[];
+
+    // 指定されたチャットルームが存在しない場合はエラーを返す
+    if (roomResult.length === 0) {
+      return {
+        isSuccess: false,
+        message: '指定されたチャットルームが存在しません。',
+      };
+    }
+
+    // チャットルームに参加しているユーザーを取得するクエリ
+    const [usersResult] = (await connection.execute(
+      'SELECT user_id FROM message_relation WHERE room_id = ? ',
+      [roomId],
+    )) as RowDataPacket[];
+
+    // チャットルームに参加しているユーザーのIDの配列を作成
+    const participants = usersResult.map((row: any) => row.user_id);
+
+    // 送信者と受信者の両方がチャットルームに参加しているかを確認
+    if (
+      !participants.includes(senderId) ||
+      !participants.includes(receiverId)
+    ) {
+      return {
+        isSuccess: false,
+        message: '送信者または受信者がチャットルームに参加していません。',
+      };
+    }
+
+    // メッセージを送信する処理を実行する（ここで実装）
+    await connection.execute(
+      `insert into message
+      (room_id, sender_id, message_content) 
+      values
+      (?, ?, ?)
+      `,
+      [roomId, senderId, content],
+    );
+
+    return { isSuccess: true, message: 'メッセージを送信しました。' };
+  } catch (error) {
+    console.error('SendMessage Error: ', error);
+    return { isSuccess: false, message: 'メッセージの送信に失敗しました。' };
+  } finally {
+    if (connection) connection.release();
+  }
+};
