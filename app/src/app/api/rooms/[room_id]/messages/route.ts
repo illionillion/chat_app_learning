@@ -1,7 +1,84 @@
 import { verifyAccessToken } from '@/lib/api/auth/saveToken';
-import { sendMessage } from '@/lib/api/message';
+import { getMessages, sendMessage } from '@/lib/api/message';
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
+
+export const GET = async (
+  request: NextRequest,
+  { params }: { params: { room_id: string } },
+) => {
+  const { room_id } = params;
+  if (isNaN(parseInt(room_id))) {
+    return NextResponse.json(
+      {
+        message: '値が不正です・',
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  const userId = request.nextUrl.searchParams.get('userId');
+  const token = request.headers.get('Authorization');
+
+  if (!userId || isNaN(parseInt(userId))) {
+    return NextResponse.json(
+      {
+        message: 'ユーザーIDが指定されていません。',
+      },
+      { status: 400 },
+    );
+  }
+
+  if (!token) {
+    return NextResponse.json(
+      {
+        message: 'トークンが指定されていません。',
+      },
+      { status: 400 },
+    );
+  }
+
+  const accessToken = token.replace('Bearer ', '').trim();
+  // トークン検証
+  const isAuthenticated = await verifyAccessToken(
+    parseInt(userId),
+    accessToken,
+  );
+
+  if (!isAuthenticated) {
+    return NextResponse.json(
+      {
+        message: '認証エラー。トークンが無効です。',
+      },
+      { status: 401 },
+    );
+  }
+
+  const { isSuccess, messages, message } = await getMessages(
+    parseInt(room_id),
+    parseInt(userId),
+  );
+
+  if (!isSuccess) {
+    return NextResponse.json(
+      {
+        message,
+      },
+      {
+        status: 500,
+      },
+    );
+  }
+
+  return NextResponse.json(
+    {
+      messages,
+    },
+    { status: 200 },
+  );
+};
 
 export const POST = async (
   request: NextRequest,

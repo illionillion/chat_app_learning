@@ -161,3 +161,54 @@ export const sendMessage = async (
     if (connection) connection.release();
   }
 };
+
+export const getMessages = async (roomId: number, userId: number) => {
+  let connection: PoolConnection | null = null;
+
+  try {
+    connection = await mysql_connection();
+
+    // 指定されたチャットルームにユーザーが属しているか確認
+    const [participants] = (await connection.execute(
+      'SELECT user_id FROM message_relation WHERE room_id = ? AND user_id = ?',
+      [roomId, userId],
+    )) as RowDataPacket[];
+
+    if (participants.length === 0) {
+      return {
+        isSuccess: false,
+        message: 'このユーザーは指定されたチャットルームに参加していません。',
+      };
+    }
+
+    // メッセージ一覧を取得
+    const [messagesResult] = (await connection.execute(
+      `SELECT 
+          m.message_id, 
+          m.room_id, 
+          m.sender_id, 
+          m.message_content, 
+          m.sent_at 
+       FROM 
+          message m
+       WHERE 
+          m.room_id = ?`,
+      [roomId],
+    )) as RowDataPacket[];
+
+    const messages = messagesResult.map((message: any) => ({
+      messageId: message.message_id,
+      roomId: message.room_id,
+      senderId: message.sender_id,
+      content: message.message_content,
+      sentAt: message.sent_at,
+    }));
+
+    return { isSuccess: true, messages };
+  } catch (error) {
+    console.error('GetMessages Error: ', error);
+    return { isSuccess: false, message: 'メッセージの取得に失敗しました。' };
+  } finally {
+    if (connection) connection.release();
+  }
+};
