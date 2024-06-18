@@ -11,10 +11,12 @@ name: Run Test on Docker
 
 on:
   push:
-    branches: [ "main", "dev", "ci-test" ]
+    # branches: [ "main", "dev", "ci-test" ]
+    branches: [ "ci-test" ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ "main", "dev", "ci-test" ]
+    # branches: [ "main", "dev", "ci-test" ]
+    branches: [ "ci-test" ]
   schedule:
     - cron: '26 15 * * 1'
 
