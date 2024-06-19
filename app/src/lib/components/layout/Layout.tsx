@@ -128,12 +128,11 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
         </ListItem>
         <ListItem>
           <Button
-            isDisabled
             w='full'
             justifyContent='left'
             as={Link}
             variant='ghost'
-            href='/'
+            href='/messages'
             leftIcon={<Mail />}
           >
             DM
