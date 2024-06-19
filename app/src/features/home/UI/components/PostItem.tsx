@@ -13,7 +13,7 @@ import {
   VStack,
   useNotice,
 } from '@yamada-ui/react';
-import { Heart, MessageSquare, Repeat2 } from 'lucide-react';
+import { Heart, MessageSquare, Repeat2 } from '@yamada-ui/lucide';
 import Link from 'next/link';
 import { useContext, type FC, useState } from 'react';
 

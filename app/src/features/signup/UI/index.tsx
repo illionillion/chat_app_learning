@@ -13,7 +13,7 @@ import {
   useBoolean,
   useNotice,
 } from '@yamada-ui/react';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff } from '@yamada-ui/lucide';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';

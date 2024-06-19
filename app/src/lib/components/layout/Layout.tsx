@@ -18,7 +18,7 @@ import {
   Search,
   Sun,
   UserRound,
-} from 'lucide-react';
+} from '@yamada-ui/lucide';
 import {
   useContext,
   type FC,
