@@ -1,4 +1,5 @@
 'use client';
+import { StateContext } from '@/lib/components/state/authContext';
 import {
   Autocomplete,
   AutocompleteOption,
@@ -9,9 +10,10 @@ import {
   VStack,
   useAsync,
 } from '@yamada-ui/react';
-import type { FC } from 'react';
+import { useContext, type FC } from 'react';
 
 export const Messages: FC = () => {
+  const { userData } = useContext(StateContext);
   const { value: users } = useAsync(async () => {
     const responseUsers = await fetch('/api/users', {
       cache: 'no-cache',
@@ -27,12 +29,32 @@ export const Messages: FC = () => {
       }[];
     };
 
-    const data = users.map((user) => ({
-      label: `${user.userName} ${user.displayName}`,
-      value: user.userId.toString(),
-    }));
+    const data = users
+      .filter((user) => user.userId !== userData?.userId)
+      .map((user) => ({
+        label: `${user.userName} ${user.displayName}`,
+        value: user.userId.toString(),
+      }));
     return data;
   });
+
+  const handleCreateRoom = async (id: string) => {
+    const response = await fetch('/api/rooms', {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: userData?.userId,
+        users: [userData?.userId, id],
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${userData?.token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    console.log(result);
+  };
 
   return (
     <VStack>
@@ -46,15 +68,13 @@ export const Messages: FC = () => {
         bg={['white', 'black']}
         zIndex={99999}
       >
-        <form>
-          <Autocomplete placeholder='ユーザーを選択'>
-            {users?.map((user, index) => (
-              <AutocompleteOption key={index} value={user.value}>
-                {user.label}
-              </AutocompleteOption>
-            ))}
-          </Autocomplete>
-        </form>
+        <Autocomplete placeholder='ユーザーを選択' onChange={handleCreateRoom}>
+          {users?.map((user, index) => (
+            <AutocompleteOption key={index} value={user.value}>
+              {user.label}
+            </AutocompleteOption>
+          ))}
+        </Autocomplete>
       </Box>
       <List px={2}>
         <Center>
