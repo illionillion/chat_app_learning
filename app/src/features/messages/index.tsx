@@ -9,11 +9,13 @@ import {
   Text,
   VStack,
   useAsync,
+  useNotice,
 } from '@yamada-ui/react';
 import { useContext, type FC } from 'react';
 
 export const Messages: FC = () => {
   const { userData } = useContext(StateContext);
+  const notice = useNotice();
   const { value: users } = useAsync(async () => {
     const responseUsers = await fetch('/api/users', {
       cache: 'no-cache',
@@ -39,6 +41,7 @@ export const Messages: FC = () => {
   });
 
   const handleCreateRoom = async (id: string) => {
+    if (!id) return;
     const response = await fetch('/api/rooms', {
       method: 'POST',
       body: JSON.stringify({
@@ -54,6 +57,26 @@ export const Messages: FC = () => {
     const result = await response.json();
 
     console.log(result);
+
+    switch (response.status) {
+      case 409:
+        // ルームへ移動
+        break;
+      case 500:
+        notice({
+          title: 'エラー',
+          description: result.message,
+          placement: 'bottom-right',
+          status: 'error',
+          variant: 'top-accent',
+          isClosable: true,
+        });
+        break;
+
+      default:
+        // ルームへ移動
+        break;
+    }
   };
 
   return (
