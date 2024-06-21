@@ -149,7 +149,7 @@ export const POST = async (request: NextRequest) => {
     return NextResponse.json(
       {
         message: '既に同じメンバーでルームが作成されています。',
-        room_id: roomId,
+        roomId: roomId,
       },
       { status: 409 },
     );
@@ -158,7 +158,7 @@ export const POST = async (request: NextRequest) => {
   return NextResponse.json(
     {
       message: 'チャットルームが正常に作成されました。',
-      room_id: roomId,
+      roomId: roomId,
     },
     { status: 201 },
   );
