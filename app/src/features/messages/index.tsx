@@ -11,10 +11,12 @@ import {
   useAsync,
   useNotice,
 } from '@yamada-ui/react';
+import { useRouter } from 'next/navigation';
 import { useContext, type FC } from 'react';
 
 export const Messages: FC = () => {
   const { userData } = useContext(StateContext);
+  const router = useRouter();
   const notice = useNotice();
   const { value: users } = useAsync(async () => {
     const responseUsers = await fetch('/api/users', {
@@ -52,6 +54,7 @@ export const Messages: FC = () => {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${userData?.token}`,
       },
+      cache: 'no-cache',
     });
 
     const result = await response.json();
@@ -59,9 +62,6 @@ export const Messages: FC = () => {
     console.log(result);
 
     switch (response.status) {
-      case 409:
-        // ルームへ移動
-        break;
       case 500:
         notice({
           title: 'エラー',
@@ -74,7 +74,7 @@ export const Messages: FC = () => {
         break;
 
       default:
-        // ルームへ移動
+        if (result.roomId) router.push(`/messages/${result.roomId}`);
         break;
     }
   };

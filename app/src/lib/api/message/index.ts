@@ -196,7 +196,15 @@ export const getMessages = async (roomId: number, userId: number) => {
       [roomId],
     )) as RowDataPacket[];
 
-    const messages = messagesResult.map((message: any) => ({
+    const messages = (
+      messagesResult as {
+        message_id: number;
+        room_id: number;
+        sender_id: number;
+        message_content: string;
+        sent_at: string;
+      }[]
+    ).map((message) => ({
       messageId: message.message_id,
       roomId: message.room_id,
       senderId: message.sender_id,
