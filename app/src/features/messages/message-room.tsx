@@ -1,5 +1,4 @@
 'use client';
-import type { getMessages } from '@/lib/api/message';
 import { StateContext } from '@/lib/components/state/authContext';
 import {
   Box,
@@ -38,7 +37,13 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
     }
 
     const result = (await responseMessage.json()) as {
-      messages: ReturnType<Awaited<typeof getMessages>>;
+      messages: {
+        messageId: number;
+        roomId: number;
+        senderId: number;
+        content: string;
+        sentAt: string;
+      }[];
     };
 
     console.log(result);
