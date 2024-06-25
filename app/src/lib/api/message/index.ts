@@ -58,7 +58,8 @@ export const getRooms = async (userId: number) => {
       `SELECT 
           mr.room_id, 
           u.id AS partner_id, 
-          u.user_name AS partner_username
+          u.user_name AS partner_username,
+          u.display_name as partner_display_name
        FROM 
           message_relation mr
        JOIN 
@@ -75,11 +76,13 @@ export const getRooms = async (userId: number) => {
         room_id: number;
         partner_id: number;
         partner_username: string;
+        partner_display_name: string;
       }[]
     ).map((v) => ({
       roomId: v.room_id,
       partnerId: v.partner_id,
       partnerUsername: v.partner_username,
+      partnerDisplayName: v.partner_display_name,
     }));
 
     return { isSuccess: true, rooms };
@@ -212,7 +215,28 @@ export const getMessages = async (roomId: number, userId: number) => {
       sentAt: message.sent_at,
     }));
 
-    return { isSuccess: true, messages };
+    // チャットルームの相手の情報を取得
+    const [partnerResult] = (await connection.execute(
+      `SELECT 
+          u.id AS partner_id, 
+          u.user_name AS partner_username, 
+          u.display_name AS partner_display_name
+       FROM 
+          users u
+       JOIN 
+          message_relation mr ON u.id = mr.user_id
+       WHERE 
+          mr.room_id = ? AND u.id != ?`,
+      [roomId, userId],
+    )) as RowDataPacket[];
+
+    const partner = {
+      partnerId: partnerResult[0].partner_id as number,
+      partnerUsername: partnerResult[0].partner_username as string,
+      partnerDisplayName: partnerResult[0].partner_display_name as string,
+    };
+
+    return { isSuccess: true, messages, partner };
   } catch (error) {
     console.error('GetMessages Error: ', error);
     return { isSuccess: false, message: 'メッセージの取得に失敗しました。' };

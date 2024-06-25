@@ -20,7 +20,7 @@ interface MessageRoomProps {
 export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
   const { userData } = useContext(StateContext);
   const router = useRouter();
-  useAsync(async () => {
+  const { value } = useAsync(async () => {
     const responseMessage = await fetch(
       `/api/rooms/${roomId}/messages?userId=${userData?.userId}`,
       {
@@ -44,11 +44,16 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
         content: string;
         sentAt: string;
       }[];
+      partner: {
+        partnerId: number;
+        partnerUsername: string;
+        partnerDisplayName: string;
+      };
     };
 
     console.log(result);
 
-    return result.messages;
+    return result;
   });
   return (
     <VStack h='full'>
@@ -62,7 +67,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
         bg={['white', 'black']}
         zIndex={999}
       >
-        ユーザー名
+        {value?.partner.partnerDisplayName}
       </Box>
       <List px={2} flexGrow={1}></List>
       <HStack

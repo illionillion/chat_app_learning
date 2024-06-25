@@ -56,7 +56,7 @@ export const GET = async (
     );
   }
 
-  const { isSuccess, messages, message } = await getMessages(
+  const { isSuccess, messages, message, partner } = await getMessages(
     parseInt(room_id),
     parseInt(userId),
   );
@@ -75,6 +75,7 @@ export const GET = async (
   return NextResponse.json(
     {
       messages,
+      partner,
     },
     { status: 200 },
   );
