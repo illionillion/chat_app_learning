@@ -3,8 +3,11 @@ import { StateContext } from '@/lib/components/state/authContext';
 import {
   Box,
   Button,
+  Center,
   HStack,
   List,
+  ListItem,
+  Text,
   Textarea,
   VStack,
   useAsync,
@@ -12,7 +15,7 @@ import {
 } from '@yamada-ui/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
 
@@ -26,6 +29,15 @@ type SubmitData = {
 
 export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
   const { userData } = useContext(StateContext);
+  const [messages, setMessages] = useState<
+    {
+      messageId: number;
+      roomId: number;
+      senderId: number;
+      content: string;
+      sentAt: string;
+    }[]
+  >([]);
   const router = useRouter();
   const {
     register,
@@ -61,6 +73,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
           status: 'success',
           isClosable: true,
         });
+        await fetchMessages();
         reset();
       }
     } catch (error) {
@@ -74,7 +87,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
     }
   };
 
-  const { value } = useAsync(async () => {
+  const fetchMessages = async () => {
     const responseMessage = await fetch(
       `/api/rooms/${roomId}/messages?userId=${userData?.userId}`,
       {
@@ -108,7 +121,13 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
 
     console.log(result);
 
+    setMessages(result.messages);
+
     return result;
+  };
+
+  const { value } = useAsync(async () => {
+    return await fetchMessages();
   });
   return (
     <VStack h='full'>
@@ -124,7 +143,25 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
       >
         {value?.partner.partnerDisplayName}
       </Box>
-      <List px={2} flexGrow={1}></List>
+      <List px={2} flexGrow={1}>
+        {messages.length === 0 ? (
+          <Center>
+            <Text>メッセージがありません</Text>
+          </Center>
+        ) : (
+          messages.map((message) => (
+            <ListItem
+              key={message.messageId}
+              display='flex'
+              justifyContent={
+                message.senderId === userData?.userId ? 'right' : 'left'
+              }
+            >
+              {message.content}
+            </ListItem>
+          ))
+        )}
+      </List>
       <HStack
         w='full'
         px={1}
