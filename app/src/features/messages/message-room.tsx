@@ -8,18 +8,72 @@ import {
   Textarea,
   VStack,
   useAsync,
+  useNotice,
 } from '@yamada-ui/react';
 import { useRouter } from 'next/navigation';
 import type { FC } from 'react';
 import { useContext } from 'react';
+import type { SubmitHandler } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 
 interface MessageRoomProps {
   roomId: string;
 }
 
+type SubmitData = {
+  content: string;
+};
+
 export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
   const { userData } = useContext(StateContext);
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    formState: { isSubmitting },
+  } = useForm<SubmitData>();
+  const content = watch('content');
+  const notice = useNotice();
+  const onSubmit: SubmitHandler<SubmitData> = async (data) => {
+    if (!data.content) return;
+    try {
+      const response = await fetch(`/api/rooms/${roomId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userData?.token}`,
+        },
+        body: JSON.stringify({
+          senderId: userData?.userId,
+          receiverId: value?.partner.partnerId,
+          content: data.content,
+        }),
+      });
+      console.log(response);
+      const json = await response.json();
+      console.log(json);
+      if (response.ok) {
+        notice({
+          title: 'メッセージを送信しました。',
+          placement: 'top',
+          status: 'success',
+          isClosable: true,
+        });
+        reset();
+      }
+    } catch (error) {
+      console.error(error);
+      notice({
+        title: 'メッセージを送信できませんでした。',
+        placement: 'top',
+        status: 'success',
+        isClosable: true,
+      });
+    }
+  };
+
   const { value } = useAsync(async () => {
     const responseMessage = await fetch(
       `/api/rooms/${roomId}/messages?userId=${userData?.userId}`,
@@ -29,6 +83,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${userData?.token}`,
         },
+        cache: 'no-cache',
       },
     );
 
@@ -65,7 +120,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
         position='sticky'
         top={0}
         bg={['white', 'black']}
-        zIndex={999}
+        zIndex={99}
       >
         {value?.partner.partnerDisplayName}
       </Box>
@@ -79,12 +134,23 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
         position='sticky'
         bottom={0}
         bg={['white', 'black']}
-        zIndex={999}
+        zIndex={99}
       >
-        <form style={{ width: '100%' }}>
+        <form style={{ width: '100%' }} onSubmit={handleSubmit(onSubmit)}>
           <HStack w='full'>
-            <Textarea autosize placeholder='メッセージ入力' flexGrow={1} />
-            <Button type='submit' colorScheme='sky'>
+            <Textarea
+              autosize
+              placeholder='メッセージ入力'
+              flexGrow={1}
+              {...register('content')}
+              isDisabled={isSubmitting}
+            />
+            <Button
+              type='submit'
+              colorScheme='sky'
+              isDisabled={!content || /^\s*$/.test(content)}
+              isLoading={isSubmitting}
+            >
               送信
             </Button>
           </HStack>
