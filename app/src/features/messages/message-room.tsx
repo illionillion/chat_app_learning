@@ -3,6 +3,8 @@ import { StateContext } from '@/lib/components/state/authContext';
 import {
   Box,
   Button,
+  Card,
+  CardBody,
   Center,
   HStack,
   List,
@@ -126,7 +128,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
     return result;
   };
 
-  const { value } = useAsync(async () => {
+  const { value, loading } = useAsync(async () => {
     return await fetchMessages();
   });
   return (
@@ -157,7 +159,17 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
                 message.senderId === userData?.userId ? 'right' : 'left'
               }
             >
-              {message.content}
+              <Card
+                bgColor={
+                  message.senderId === userData?.userId ? 'primary' : 'blue.800'
+                }
+              >
+                <CardBody>
+                  <Text as='pre' color='white'>
+                    {message.content}
+                  </Text>
+                </CardBody>
+              </Card>
             </ListItem>
           ))
         )}
@@ -180,7 +192,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
               placeholder='メッセージ入力'
               flexGrow={1}
               {...register('content')}
-              isDisabled={isSubmitting}
+              isDisabled={isSubmitting || loading}
             />
             <Button
               type='submit'
