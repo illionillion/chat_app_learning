@@ -3,14 +3,18 @@ import { StateContext } from '@/lib/components/state/authContext';
 import {
   Autocomplete,
   AutocompleteOption,
+  Avatar,
   Box,
   Center,
+  HStack,
   List,
+  ListItem,
   Text,
   VStack,
   useAsync,
   useNotice,
 } from '@yamada-ui/react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, type FC } from 'react';
 
@@ -18,7 +22,7 @@ export const Messages: FC = () => {
   const { userData } = useContext(StateContext);
   const router = useRouter();
   const notice = useNotice();
-  const { value: users } = useAsync(async () => {
+  const { value } = useAsync(async () => {
     const responseUsers = await fetch('/api/users', {
       cache: 'no-cache',
     });
@@ -33,12 +37,33 @@ export const Messages: FC = () => {
       }[];
     };
 
-    const data = users
-      .filter((user) => user.userId !== userData?.userId)
-      .map((user) => ({
-        label: `${user.userName} ${user.displayName}`,
-        value: user.userId.toString(),
-      }));
+    const responseRooms = await fetch(`/api/rooms?userId=${userData?.userId}`, {
+      cache: 'no-cache',
+      headers: {
+        Authorization: `Bearer ${userData?.token}`,
+      },
+    });
+
+    const { rooms } = (await responseRooms.json()) as {
+      rooms: {
+        roomId: number;
+        partnerId: number;
+        partnerUsername: string;
+        partnerDisplayName: string;
+      }[];
+    };
+    console.log(rooms);
+
+    const data = {
+      users: users
+        .filter((user) => user.userId !== userData?.userId)
+        .map((user) => ({
+          label: `${user.userName} ${user.displayName}`,
+          value: user.userId.toString(),
+        })),
+      rooms,
+    };
+
     return data;
   });
 
@@ -92,7 +117,7 @@ export const Messages: FC = () => {
         zIndex={99999}
       >
         <Autocomplete placeholder='ユーザーを選択' onChange={handleCreateRoom}>
-          {users?.map((user, index) => (
+          {value?.users?.map((user, index) => (
             <AutocompleteOption key={index} value={user.value}>
               {user.label}
             </AutocompleteOption>
@@ -100,9 +125,29 @@ export const Messages: FC = () => {
         </Autocomplete>
       </Box>
       <List px={2}>
-        <Center>
-          <Text>メッセージがありません</Text>
-        </Center>
+        {value?.rooms.length === 0 ? (
+          <Center>
+            <Text>メッセージがありません</Text>
+          </Center>
+        ) : (
+          value?.rooms.map((room, index) => (
+            <ListItem
+              key={index}
+              as={Link}
+              href={`/messages/${room.roomId}`}
+              display='flex'
+              gap='md'
+            >
+              <Avatar as={Link} href={`/${room.partnerUsername}`} />
+              <Center>
+                <HStack>
+                  <Text>{room.partnerDisplayName}</Text>
+                  <Text color='gray.500'>{room.partnerUsername}</Text>
+                </HStack>
+              </Center>
+            </ListItem>
+          ))
+        )}
       </List>
     </VStack>
   );
