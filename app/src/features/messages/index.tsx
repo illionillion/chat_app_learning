@@ -131,9 +131,14 @@ export const Messages: FC = () => {
           </Center>
         ) : (
           value?.rooms.map((room, index) => (
-            <ListItem key={index} display='flex' gap='md'>
+            <ListItem key={index} display='flex' gap='md' w='full'>
               <Avatar as={Link} href={`/${room.partnerUsername}`} />
-              <Center as={Link} href={`/messages/${room.roomId}`}>
+              <Center
+                as={Link}
+                href={`/messages/${room.roomId}`}
+                flexGrow={1}
+                justifyContent='left'
+              >
                 <HStack>
                   <Text>{room.partnerDisplayName}</Text>
                   <Text color='gray.500'>{room.partnerUsername}</Text>
