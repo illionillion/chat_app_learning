@@ -1,14 +1,10 @@
 'use client';
 import { StateContext } from '@/lib/components/state/authContext';
 import {
-  Box,
   Button,
-  Card,
-  CardBody,
   Center,
   HStack,
   List,
-  ListItem,
   Text,
   Textarea,
   VStack,
@@ -20,6 +16,7 @@ import type { FC } from 'react';
 import { useContext, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
+import { MessageItem } from './components/message-item';
 
 interface MessageRoomProps {
   roomId: string;
@@ -133,7 +130,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
   });
   return (
     <VStack h='full'>
-      <Box
+      <HStack
         px={1}
         py={2}
         borderBottom='1px solid black'
@@ -143,8 +140,11 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
         bg={['white', 'black']}
         zIndex={99}
       >
-        {value?.partner.partnerDisplayName}
-      </Box>
+        <Text>{value?.partner.partnerDisplayName}</Text>
+        <Text fontSize='sm' color='gray.500'>
+          {value?.partner.partnerUsername}
+        </Text>
+      </HStack>
       <List px={2} flexGrow={1}>
         {messages.length === 0 ? (
           <Center>
@@ -152,25 +152,7 @@ export const MessageRoom: FC<MessageRoomProps> = ({ roomId }) => {
           </Center>
         ) : (
           messages.map((message) => (
-            <ListItem
-              key={message.messageId}
-              display='flex'
-              justifyContent={
-                message.senderId === userData?.userId ? 'right' : 'left'
-              }
-            >
-              <Card
-                bgColor={
-                  message.senderId === userData?.userId ? 'primary' : 'blue.800'
-                }
-              >
-                <CardBody>
-                  <Text as='pre' color='white'>
-                    {message.content}
-                  </Text>
-                </CardBody>
-              </Card>
-            </ListItem>
+            <MessageItem key={message.messageId} message={message} />
           ))
         )}
       </List>
