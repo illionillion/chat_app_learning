@@ -1,3 +1,4 @@
+'use client';
 import { StateContext } from '@/lib/components/state/authContext';
 import type { PostData } from '@/lib/types/PostData';
 import {

@@ -1,3 +1,4 @@
+'use client';
 import { StateContext } from '@/lib/components/state/authContext';
 import { Card, CardBody, ListItem, Text } from '@yamada-ui/react';
 import type { FC } from 'react';
