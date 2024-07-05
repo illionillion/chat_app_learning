@@ -31,35 +31,41 @@ export const Profile: FC<{ userName: string }> = ({ userName }) => {
 
   return (
     <VStack>
-      <HStack
+      <Center
         p='md'
         borderBottom='1px solid'
         borderBottomColor={['blackAlpha.500', 'whiteAlpha.500']}
       >
-        <Center flex={1}>
+        <VStack maxW='7xl'>
+          <HStack justifyContent='space-between'>
+            <Center>
+              <SkeletonText isLoaded={!loading} fadeDuration={2}>
+                <>
+                  <Center gap='md' justifyContent='left'>
+                    <Heading>{value?.displayName}</Heading>
+                    <Text color={['blackAlpha.500', 'whiteAlpha.500']}>
+                      @{userName}
+                    </Text>
+                  </Center>
+                </>
+              </SkeletonText>
+            </Center>
+            <HStack as={Center} alignItems='center'>
+              <Avatar alt={userName} size='xl' />
+              {userData?.userName === userName && (
+                <Box>
+                  <Button as={Link} href='/edit-profile'>
+                    編集
+                  </Button>
+                </Box>
+              )}
+            </HStack>
+          </HStack>
           <SkeletonText isLoaded={!loading} fadeDuration={2}>
-            <>
-              <Center gap='md'>
-                <Heading>{value?.displayName}</Heading>
-                <Text color={['blackAlpha.500', 'whiteAlpha.500']}>
-                  @{userName}
-                </Text>
-              </Center>
-              <Text>{value?.description}</Text>
-            </>
+            <Text>{value?.description}</Text>
           </SkeletonText>
-        </Center>
-        <HStack as={Center} flex={1} alignItems='center'>
-          <Avatar alt={userName} size='xl' />
-          {userData?.userName === userName && (
-            <Box>
-              <Button as={Link} href='/edit-profile'>
-                編集
-              </Button>
-            </Box>
-          )}
-        </HStack>
-      </HStack>
+        </VStack>
+      </Center>
       <List px={2}>
         {value?.posts && value?.posts.length > 0 ? (
           value?.posts.map((v, i: number) => (
