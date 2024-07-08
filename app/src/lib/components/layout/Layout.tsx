@@ -10,14 +10,14 @@ import {
   useColorMode,
 } from '@yamada-ui/react';
 import {
-  Bell,
-  Home,
-  LogOut,
-  Mail,
-  Moon,
-  Search,
-  Sun,
-  UserRound,
+  BellIcon,
+  HomeIcon,
+  LogOutIcon,
+  MailIcon,
+  MoonIcon,
+  SearchIcon,
+  SunIcon,
+  UserRoundIcon,
 } from '@yamada-ui/lucide';
 import {
   useContext,
@@ -95,7 +95,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             as={Link}
             variant='ghost'
             href='/'
-            leftIcon={<Home />}
+            leftIcon={<HomeIcon />}
           >
             ホーム
           </Button>
@@ -108,7 +108,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             as={Link}
             variant='ghost'
             href='/'
-            leftIcon={<Search />}
+            leftIcon={<SearchIcon />}
           >
             検索
           </Button>
@@ -121,7 +121,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             as={Link}
             variant='ghost'
             href='/'
-            leftIcon={<Bell />}
+            leftIcon={<BellIcon />}
           >
             通知
           </Button>
@@ -133,7 +133,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             as={Link}
             variant='ghost'
             href='/messages'
-            leftIcon={<Mail />}
+            leftIcon={<MailIcon />}
           >
             DM
           </Button>
@@ -145,7 +145,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             as={Link}
             variant='ghost'
             href={`/${userData?.userName}`}
-            leftIcon={<UserRound />}
+            leftIcon={<UserRoundIcon />}
           >
             プロフィール
           </Button>
@@ -154,7 +154,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
           <Button
             justifyContent='left'
             variant='ghost'
-            leftIcon={colorMode === 'light' ? <Sun /> : <Moon />}
+            leftIcon={colorMode === 'light' ? <SunIcon /> : <MoonIcon />}
             onClick={toggleColorMode}
           >
             {colorMode === 'light' ? 'ライト' : 'ダーク'}モード
@@ -165,7 +165,7 @@ export const Layout: FC<LayoutProps> = ({ children }) => {
             w='full'
             justifyContent='left'
             variant='ghost'
-            leftIcon={<LogOut />}
+            leftIcon={<LogOutIcon />}
             onClick={onLogout}
           >
             ログアウト
